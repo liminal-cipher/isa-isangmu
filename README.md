@@ -1,19 +1,20 @@
 # 이사이상무
 
-> AI 기반 이사 도우미 — 이사 여정 전체를 한 곳에서
+> AI 기반 이사 도우미. 계약 전 위험 점검부터 이사 후 행정 처리까지 이사 여정 전체를 한 곳에서.
 
-Microsoft AI School 9기 2차 프로젝트 · 2026.04.13 ~ 04.26 (약 2주) · 6인 팀
+![React Native](https://img.shields.io/badge/React%20Native-Expo-61DAFB?logo=expo&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white)
+![Azure AI Search](https://img.shields.io/badge/Azure%20AI%20Search-3--index%20RAG-0078D4?logo=microsoftazure&logoColor=white)
+![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-GPT--4o-412991)
 
-<!-- TODO: 히어로 이미지 (메인 화면 또는 마스코트) -->
-
----
+Microsoft AI School 9기 2차 프로젝트 · 6인 팀 · 2026.04.13 ~ 04.26 (약 2주)
 
 ## Overview
 
 이사이상무는 **계약 전 위험 점검부터 이사 후 행정 처리까지** 이사 여정 전체를 한 곳에서 안내하는 모바일 서비스다. 개인 조건(자취/가족, 월세/전세, 반려동물, 자녀 등)에 따라 절차가 달라지는 한국 이사 행정의 복잡성을 다루기 위해, **법령·공공 데이터에 근거한 맞춤형 안내**를 제공한다.
 
 - React Native (Expo) 모바일 앱
-- AI는 필요한 자리에만 — 결정성을 살리는 하이브리드 설계
+- AI는 필요한 자리에만 두는, 결정성을 살리는 하이브리드 설계
 - 비로그인 + 업로드 즉시 삭제
 
 ---
@@ -87,7 +88,7 @@ Microsoft AI School 9기 2차 프로젝트 · 2026.04.13 ~ 04.26 (약 2주) · 6
 
 PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 분류한다. **추출·판정·해석 3단 분리**로 환각을 구조적으로 차단했다.
 
-- **추출**: Azure Document Intelligence (Custom Neural — 양식 변형에 강건한 모델로 학습) → 주소·면적·소유자·근저당·지역
+- **추출**: Azure Document Intelligence (Custom Neural: 양식 변형에 강건한 모델로 학습) → 주소·면적·소유자·근저당·지역
 - **판정**: Python 룰 엔진 (공개된 임계값) → LLM이 판정 권한을 갖지 않음
 - **해석**: GPT-4o → 사용자가 이해할 수 있게 풀어서 설명
 - 종합 점수는 의도적으로 만들지 않음 → 가중치 책임을 사용자에게 떠넘기지 않기 위해
