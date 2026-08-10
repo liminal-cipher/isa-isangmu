@@ -153,7 +153,7 @@ cd frontend && npm install && npx expo start
 
 | 이름 | GitHub | 담당 |
 | --- | --- | --- |
-| **조윤재** (팀 리드) | [@liminal-cipher](https://github.com/liminal-cipher) | 기획서 · 시스템 아키텍처와 RAG 파이프라인 설계 · Azure AI Search 인덱스 스키마 설계와 3-index 구축 · 등기부등본 테스트 시나리오 설계 · 시스템 아키텍처 발표 |
+| **조윤재** (Team Lead) | [@liminal-cipher](https://github.com/liminal-cipher) | 기획서 · 시스템 아키텍처와 RAG 파이프라인 설계 · Azure AI Search 인덱스 스키마 설계와 3-index 구축 · 등기부등본 테스트 시나리오 설계 · 시스템 아키텍처 발표 |
 | **김시언** | [@happybluebird](https://github.com/happybluebird) | 발표 슬라이드 구성 · UI 제작과 디자인 · 도메인 리서치 · 문제 정의와 서비스 소개 발표 |
 | **노지현** | [@Jihyun-KR](https://github.com/Jihyun-KR) | 시연 영상 기획·촬영·편집 · 이용자 가상 시나리오 설계 · Azure AI Search 통합 인덱스 구현 · 시연 파트 발표 |
 | **이승아** | [@wes0031-rgb](https://github.com/wes0031-rgb) | React Native 앱 개발 · Azure 서비스 연동(AI Search · OpenAI · Document Intelligence) · 도메인 리서치 · 성과와 한계 발표 |
