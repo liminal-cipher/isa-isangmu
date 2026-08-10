@@ -86,40 +86,39 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 
 ## Architecture
 
-<br>
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/overview-dark.png">
   <img src="docs/architecture/overview-light.png" alt="시스템 아키텍처" width="100%">
 </picture>
 
-<br>
-
-| 계층       | 구성                                                           |
-| ---------- | -------------------------------------------------------------- |
-| 프론트엔드 | React Native (Expo)                                            |
-| 백엔드     | FastAPI (Python)                                               |
-| AI/검색    | Azure OpenAI (GPT-4o, text-embedding-3-small), Azure AI Search |
-| 문서 처리  | Azure Document Intelligence (Custom Neural)                    |
-| 음성       | Azure Speech (STT)                                             |
-| 저장       | Azure Blob Storage                                             |
-
-데이터는 법제처 API·easylaw·정부 기관 가이드·공공데이터포털 기반이며 모두 **공공누리 제1유형**(출처 표시) 라이선스를 따른다.
-
-<br>
+### 데이터 전처리
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/architecture/data-preprocessing-dark.png">
   <img src="docs/architecture/data-preprocessing-light.png" alt="데이터 전처리 파이프라인" width="100%">
 </picture>
 
-<br>
+데이터는 법제처 API · easylaw · 정부 기관 가이드 · 공공데이터포털 기반이며 모두 **공공누리 제1유형**(출처 표시) 라이선스를 따른다.
+
+### 스택
+
+| 계층 | 구성 |
+| --- | --- |
+| 프론트엔드 | React Native (Expo) |
+| 백엔드 | FastAPI (Python) |
+| AI·검색 | Azure OpenAI (GPT-4o · text-embedding-3-small) · Azure AI Search |
+| 문서 처리 | Azure Document Intelligence (Custom Neural) |
+| 음성 | Azure Speech (STT) |
+| 저장 | Azure Blob Storage |
 
 ## Tech Decisions
 
-**1. 인덱스 구조: 단일 통합 → 3개 분리.** 글을 찾아 읽는 데이터(법령·해설)와 정확한 값을 그대로 꺼내 쓰는 데이터(기관 연락처)는 성격이 달랐다. 데이터 종류별로 자체 인덱스를 갖는 3-index 구조로 분리한 결과, 환각 없이 정확한 연락처를 제공하고 기능마다 필요한 인덱스만 호출할 수 있게 됐다.
-
-**2. 체크리스트 파이프라인: 단일 LLM → 하이브리드.** 처음에는 모든 조건을 LLM에 넘겼는데 같은 입력에도 매번 다른 출력이 나왔다. 토글 조건은 옵션이 정해져 있어 LLM이 필요 없다는 점을 깨닫고, **정형 조건은 정적 매핑·자유 텍스트만 LLM**으로 분리했다. 결정성과 LLM 호출 절감을 동시에 얻었다.
+| 영역 | 선택 | 이유 |
+| --- | --- | --- |
+| 인덱스 구조 | **3-index 분리** (단일 통합 대신) | 글을 찾아 읽는 데이터(법령·해설)와 정확한 값을 그대로 꺼내 쓰는 데이터(기관 연락처)는 성격이 달랐다. 데이터 종류별로 자체 인덱스를 갖게 하니 환각 없이 정확한 연락처를 제공하고, 기능마다 필요한 인덱스만 호출할 수 있게 됐다 |
+| 체크리스트 파이프라인 | **하이브리드** (단일 LLM 대신) | 처음에는 모든 조건을 LLM에 넘겼는데 같은 입력에도 매번 다른 출력이 나왔다. 토글 조건은 옵션이 정해져 있어 LLM이 필요 없다. 정형 조건은 정적 매핑, 자유 텍스트만 LLM으로 분리해 결정성과 호출 절감을 동시에 얻었다 |
+| 등기부등본 판정 | **Python 룰 엔진** (LLM 판정 대신) | 위험·주의·안전 등급은 공개된 임계값으로 정할 수 있다. LLM에 판정 권한을 주면 근거를 설명할 수 없고 같은 문서에 다른 답이 나온다. LLM은 결과를 풀어 설명하는 자리에만 둔다 |
+| 종합 위험 점수 | **만들지 않음** | 점수를 내려면 근저당 규모와 지역 특성의 상대적 위험도에 가중치를 정해야 하는데, 그 근거가 없었다. 임의 가중치로 한 숫자를 만들면 그 판단의 책임이 사용자에게 넘어간다 |
 
 ## Results & Limitations
 
