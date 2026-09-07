@@ -122,8 +122,9 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 
 ## Results & Limitations
 
-**정량 지표는 측정하지 않았다.** 체크리스트 정확도, 등기부등본 추출 정확도, 챗봇 답변 품질 어느 것도 정답셋을 만들어 재지 않았다. 2주 일정에서 기능 완성을 우선했고, 검증은 팀이 만든 시나리오를 손으로 돌려보는 수준이었다.
+발표 기준 Golden Query 30건에서 **recall 96.9% · violations 0건**을 측정했다. repo에는 이후 60건으로 확장한 평가셋과 실행 리포트도 남아 있지만, 로컬 폴백 모드 결과라 최종 Azure 3-index 배포와 같은 조건의 수치로 보지 않는다. 3-index 전환 자체의 효과를 unified index와 A/B 비교한 실험은 하지 않았다.
 
+- **정량 평가는 있었지만 아키텍처 비교는 아니었다.** Golden Query는 최종 검색 품질을 확인했지만, unified index와 3-index를 같은 조건에서 비교하지는 않았다.
 - **Azure AI Search 인덱스는 코드로 재생성되지 않는다.** 3개 인덱스를 포털에서 직접 구성하고 데이터를 올렸기 때문에, repo를 clone해도 인덱스는 따라오지 않는다. 인프라를 코드로 관리하지 않은 상태이고, 지금은 구독 접근이 끊겨 원본 구성을 다시 확인할 수도 없다.
 - **등기부등본 추출은 Custom Neural 학습 모델에 묶여 있다.** 학습한 모델이 없으면 해당 기능이 동작하지 않는다. 학습 데이터는 팀이 라벨링한 것으로 repo에 없다.
 - **종합 위험 점수를 만들지 않은 것은 의도된 한계다.** 가중치를 정하는 순간 그 판단의 책임이 서비스로 넘어오는데, 근저당 규모와 지역 특성의 상대적 위험도를 근거 있게 정할 수 없었다.
@@ -153,7 +154,7 @@ cd frontend && npm install && npx expo start
 
 | 이름 | GitHub | 담당 |
 | --- | --- | --- |
-| **조윤재** (Team Lead) | [@liminal-cipher](https://github.com/liminal-cipher) | 기획서 · 시스템 아키텍처와 RAG 파이프라인 설계 · Azure AI Search 인덱스 스키마 설계와 3-index 구축 · 등기부등본 테스트 시나리오 설계 · 시스템 아키텍처 발표 |
+| **조윤재** (Team Lead) | [@liminal-cipher](https://github.com/liminal-cipher) | 기획서 · 시스템 아키텍처와 RAG 파이프라인 설계 · Azure AI Search 인덱스 스키마 설계와 3-index 구축 · 멀티 인덱스 전환 프로토타입 구현 · 등기부등본 테스트 시나리오 설계 · 시스템 아키텍처 발표 |
 | **김시언** | [@happybluebird](https://github.com/happybluebird) | 발표 슬라이드 구성 · UI 제작과 디자인 · 도메인 리서치 · 문제 정의와 서비스 소개 발표 |
 | **노지현** | [@Jihyun-KR](https://github.com/Jihyun-KR) | 시연 영상 기획·촬영·편집 · 이용자 가상 시나리오 설계 · Azure AI Search 통합 인덱스 구현 · 시연 파트 발표 |
 | **이승아** | [@wes0031-rgb](https://github.com/wes0031-rgb) | React Native 앱 개발 · Azure 서비스 연동(AI Search · OpenAI · Document Intelligence) · 도메인 리서치 · 성과와 한계 발표 |
@@ -164,11 +165,12 @@ cd frontend && npm install && npx expo start
 
 | 담당 | 산출물 |
 | --- | --- |
-| 아키텍처·RAG 설계 | 시스템 아키텍처와 3-index RAG 파이프라인 설계, 기획서 작성 |
-| Azure AI Search 인덱스 | `law-index` · `guide-index` · `mapping-index` 스키마 설계와 구축. 코드가 아닌 포털에서 구성했기 때문에 전환 과정은 [`feat/3-index-rag-transition`](https://github.com/liminal-cipher/isa-isangmu/tree/feat/3-index-rag-transition) · [`feat/4-index-rag-transition-mapping`](https://github.com/liminal-cipher/isa-isangmu/tree/feat/4-index-rag-transition-mapping) 브랜치에만 남아 있다 |
+| 아키텍처·RAG 설계 | 시스템 아키텍처와 최종 `law` · `guide` · `mapping` 3-index RAG 구조 설계, 기획서 작성 |
+| 멀티 인덱스 검색 프로토타입 | [`feat/3-index-rag-transition`](https://github.com/liminal-cipher/isa-isangmu/tree/feat/3-index-rag-transition)의 [`search_service.py`](https://github.com/liminal-cipher/isa-isangmu/blob/feat/3-index-rag-transition/backend/app/search_service.py)에서 law · guide · video 병렬 hybrid search 서비스와 `/chat` 연동을 구현 |
+| mapping-index 구축 | [`feat/4-index-rag-transition-mapping`](https://github.com/liminal-cipher/isa-isangmu/tree/feat/4-index-rag-transition-mapping)에서 mapping 전용 스키마·Azure 리소스와 122개 청크를 구축 |
 | 등기부등본 검증 | 위험·주의·안전 판정을 확인하는 테스트 시나리오 설계 |
 
-> 인덱스 작업이 브랜치에만 있는 이유는 팀 정본에 머지되지 않은 채 프로젝트가 끝났기 때문이다. `main`에서는 찾을 수 없다.
+> 멀티 인덱스 전환안은 팀 `main`의 병행 개발 경로와 합쳐지지 않은 채 프로젝트가 끝나 최종 `main`에는 머지되지 않았다. 위 브랜치에 프로토타입과 전환 흔적이 남아 있다.
 
 ## Retrospective
 
@@ -176,8 +178,8 @@ cd frontend && npm install && npx expo start
 
 **하이브리드 전환은 늦게 깨달았다.** 처음부터 모든 조건을 LLM에 넘겼다가 같은 입력에 다른 출력이 나오는 걸 보고서야 토글은 LLM이 필요 없다는 걸 알았다. 결정성이 필요한 자리와 유연성이 필요한 자리를 먼저 나눴다면 재작업이 없었다.
 
-**정량 평가를 아예 두지 않았다.** 시나리오를 손으로 돌려보는 것으로 갈음했는데, 작은 정답셋이라도 만들었다면 3-index 전환이 실제로 나아졌는지 말할 수 있었을 것이다.
+**정량 평가는 했지만 아키텍처 ablation이 없었다.** Golden Query 30건으로 recall 96.9%와 violations 0건을 확인했지만, unified index와 3-index를 같은 평가셋으로 직접 비교하지 않았다. 다시 한다면 동일한 정답셋으로 두 구조를 A/B 평가해 전환 효과까지 검증할 것이다.
 
 ## Status
 
-완료. Microsoft AI School 9기 2차 프로젝트로 2026.04.13 ~ 04.26 진행. Azure 구독 접근이 끊겨 현재는 실행할 수 없고, 코드와 발표 자료만 남아 있다. 마지막 갱신 2026-08-11.
+완료. Microsoft AI School 9기 2차 프로젝트로 2026.04.13 ~ 04.26 진행. Azure 구독 접근이 끊겨 현재는 실행할 수 없고, 코드와 발표 자료만 남아 있다. 마지막 갱신 2026-09-07.
