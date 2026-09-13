@@ -29,11 +29,11 @@ Microsoft AI School 9기 2차 프로젝트 · 팀 이문세 (6인) · 2026.04.13
 
 ### 1. 이사 체크리스트 (핵심)
 
-조건을 입력하면 D-day 기준 타임라인을 만들어준다. **하이브리드 구조**로 결정성과 유연성을 동시에 확보했다.
+조건을 입력하면 D-day 기준 타임라인을 만들어준다. 체크리스트 파이프라인은 프로젝트 중 두 단계로 발전했다.
 
-- 정형 조건(토글)은 정적 쿼리 매핑으로 처리 → 같은 입력 → 같은 결과
-- 자유 텍스트("기타 특이사항")는 LLM으로 처리 → 토글로 잡히지 않는 엣지 케이스 대응
-- 각 항목은 법적 기한 기준 D-day로 정렬, 공휴일이면 다음 평일로 자동 조정
+- **2026-04-20 Golden Query 30건 평가 시점**: `LLM query planning → RAG/hybrid search → LLM checklist structuring → deterministic Python post-processing`. RAG+LLM으로 초안을 만들고 정형 조건과 필수 항목은 Python 규칙으로 보정했다.
+- **2026-04-21 later static optimization**: `free_text`가 없으면 LLM/search를 건너뛰는 static/rule path를 사용하고, `free_text`가 있을 때만 LLM path를 유지했다.
+- 각 항목은 법적 기한 기준 D-day로 정렬하고, 공휴일이면 다음 평일로 자동 조정했다.
 - 항목별 상세: 설명·신청 방법·연락처·법적 근거(외부 링크)·내 메모(로컬 저장)
 
 <br>
@@ -117,21 +117,24 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 | 영역 | 선택 | 이유 |
 | --- | --- | --- |
 | 인덱스 구조 | **3-index 분리** (단일 통합 대신) | 글을 찾아 읽는 데이터(법령·해설)와 정확한 값을 그대로 꺼내 쓰는 데이터(기관 연락처)는 성격이 달랐다. 데이터 종류별로 자체 인덱스를 갖게 하니 환각 없이 정확한 연락처를 제공하고, 기능마다 필요한 인덱스만 호출할 수 있게 됐다 |
-| 체크리스트 파이프라인 | **하이브리드** (단일 LLM 대신) | 처음에는 모든 조건을 LLM에 넘겼는데 같은 입력에도 매번 다른 출력이 나왔다. 토글 조건은 옵션이 정해져 있어 LLM이 필요 없다. 정형 조건은 정적 매핑, 자유 텍스트만 LLM으로 분리해 결정성과 호출 절감을 동시에 얻었다 |
+| 체크리스트 파이프라인 | **RAG+LLM + Python post-processing**, 이후 static fast path | 4/20 평가 시점에는 LLM query planning·hybrid search·LLM structuring 뒤 Python 규칙으로 정형 조건과 필수 항목을 보정했다. 4/21에는 no-`free_text` 요청에서 LLM/search를 건너뛰는 static/rule path를 추가했다 |
 | 등기부 추출 | **Layout+LLM + Custom Neural 병렬 보강** | Layout+LLM 경로를 baseline/fallback으로 유지하고, Custom Neural의 고신뢰 필드와 위험 플래그를 confidence 기반으로 merge해 양식 변형에 대응했다 |
 | 등기부등본 판정 | **Python 룰 엔진** (LLM 판정 대신) | 위험·주의·안전 등급은 공개된 임계값으로 정할 수 있다. LLM에 판정 권한을 주면 근거를 설명할 수 없고 같은 문서에 다른 답이 나온다. LLM은 결과를 풀어 설명하는 자리에만 둔다 |
 | 종합 위험 점수 | **만들지 않음** | 점수를 내려면 근저당 규모와 지역 특성의 상대적 위험도에 가중치를 정해야 하는데, 그 근거가 없었다. 임의 가중치로 한 숫자를 만들면 그 판단의 책임이 사용자에게 넘어간다 |
 
 ## Results & Limitations
 
-발표 기준 Golden Query 30건에서 **recall 96.9% · violations 0건**을 측정했다. repo에는 이후 60건으로 확장한 평가셋과 실행 리포트도 남아 있지만, 로컬 폴백 모드 결과라 최종 Azure 3-index 배포와 같은 조건의 수치로 보지 않는다. 3-index 전환 자체의 효과를 unified index와 A/B 비교한 실험은 하지 않았다.
+체크리스트 평가는 **서로 다른 두 stage**를 구분해 본다.
 
-- **정량 평가는 있었지만 아키텍처 비교는 아니었다.** Golden Query는 최종 검색 품질을 확인했지만, unified index와 3-index를 같은 조건에서 비교하지는 않았다.
+- **2026-04-20 · Golden Query 30건**: `mean_recall 0.969`, **26/30 scenarios perfect recall**, **predefined must-not violations 0건**. 당시 구조는 `LLM query planning → RAG/hybrid search → LLM checklist structuring → deterministic Python post-processing`였다. citation coverage와 deadline accuracy는 별도 지표이며 완벽하지 않았다.
+- **2026-04-21 · later static optimization, 60건**: `free_text`가 없으면 LLM/search를 건너뛰는 static/rule path를 사용하고, `free_text`가 있을 때만 LLM path를 유지했다. 이 stage의 결과는 **recall 0.963, predefined must-not violations 0건**이다.
+- `0.434 → 0.969 (v1 → v4)`는 retrieval·prompt·context·post-processing 등이 함께 바뀐 **전체 시스템 개선**이다. 특정 규칙이나 인덱스 변경 하나의 효과로 귀속하지 않는다. 현재 upstream 기록에는 v2/v3의 정확한 recall 값이 남아 있지 않다.
+- **predefined must-not violations 0건은 모든 종류의 hallucination이 0이었다는 뜻이 아니다.** 그래서 문서에서는 `hallucination 0` 대신 해당 평가 지표명을 그대로 쓴다.
+- **정량 평가는 있었지만 아키텍처 ablation은 아니었다.** unified index와 3-index를 같은 조건에서 A/B 비교하지는 않았다.
 - **최종 구현과 team `main`은 다르다.** 3-index 전환과 Custom Neural 병렬 통합 코드는 feature branch에 보존됐지만 프로젝트 종료 전 team `main`에 머지되지 않았다. 따라서 `main`만 보면 unified-index·`prebuilt-layout` 중심의 이전 경로가 보인다.
 - **Azure AI Search 인덱스는 코드로 재생성되지 않는다.** 최종 law·guide·mapping 인덱스는 포털에서 직접 구성하고 데이터를 올렸기 때문에, repo를 clone해도 인덱스 자체는 따라오지 않는다. 인프라를 코드로 관리하지 않은 상태이고, 지금은 구독 접근이 끊겨 원본 구성을 다시 확인할 수도 없다.
 - **등기부등본 추출은 학습된 Custom Neural 모델에 의존한다.** feature branch에는 model ID 주입과 merge 로직이 남아 있지만 학습된 Azure 모델과 라벨링 데이터 자체는 repo에 없다.
 - **종합 위험 점수를 만들지 않은 것은 의도된 한계다.** 가중치를 정하는 순간 그 판단의 책임이 서비스로 넘어오는데, 근저당 규모와 지역 특성의 상대적 위험도를 근거 있게 정할 수 없었다.
-- 체크리스트의 자유 텍스트 경로는 LLM을 쓰므로 같은 입력에 같은 출력을 보장하지 않는다. 토글 경로만 결정적이다.
 
 ## Getting Started
 
@@ -181,9 +184,9 @@ cd frontend && npm install && npx expo start
 
 **인덱스를 포털에서 만든 것이 가장 아쉽다.** 2주 일정에서는 그게 빨랐지만, 그 결정 때문에 지금 이 repo만으로는 챗봇을 되살릴 수 없다. 다시 한다면 인덱스 스키마와 적재 스크립트를 코드로 먼저 두고 포털은 확인용으로만 썼을 것이다.
 
-**하이브리드 전환은 늦게 깨달았다.** 처음부터 모든 조건을 LLM에 넘겼다가 같은 입력에 다른 출력이 나오는 걸 보고서야 토글은 LLM이 필요 없다는 걸 알았다. 결정성이 필요한 자리와 유연성이 필요한 자리를 먼저 나눴다면 재작업이 없었다.
+**체크리스트는 한 번에 static/rule 구조로 간 것이 아니었다.** 4/20 평가 stage에서는 query planning과 checklist structuring에 LLM을 쓰고 Python 후처리로 정형 조건과 필수 항목을 보정했다. 그 다음날 no-`free_text` 요청을 static/rule path로 우회하는 최적화를 추가했다. 결정성이 필요한 영역을 더 일찍 분리했다면 호출 비용과 재작업을 줄일 수 있었을 것이다.
 
-**정량 평가는 했지만 아키텍처 ablation이 없었다.** Golden Query 30건으로 recall 96.9%와 violations 0건을 확인했지만, unified index와 3-index를 같은 평가셋으로 직접 비교하지 않았다. 다시 한다면 동일한 정답셋으로 두 구조를 A/B 평가해 전환 효과까지 검증할 것이다.
+**정량 평가는 했지만 아키텍처 ablation이 없었다.** 4/20 30Q에서는 `mean_recall 0.969`와 predefined must-not violations 0건, 4/21 60Q에서는 `recall 0.963`과 predefined must-not violations 0건을 확인했다. 하지만 `0.434 → 0.969` 동안 여러 요소가 함께 바뀌었고 unified index와 3-index도 같은 조건에서 직접 비교하지 않았다. 다시 한다면 동일한 정답셋으로 각 변경을 분리해 ablation/A-B 평가할 것이다.
 
 ## Status
 
