@@ -45,15 +45,18 @@ Microsoft AI School 9기 2차 프로젝트 · 팀 이문세 (6인) · 2026.04.13
 
 <br>
 
-
 ### 2. 등기부등본 해석기
 
-PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 분류한다. **추출·판정·해석 3단 분리**로 환각을 구조적으로 차단했다.
+PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 분류한다. **추출·판정·해석을 분리**해 LLM이 최종 판정권을 갖지 않도록 했다.
 
-- **추출**: Azure Document Intelligence (Custom Neural: 양식 변형에 강건한 모델로 학습) → 주소·면적·소유자·근저당·지역
+- **추출**: `prebuilt-layout → GPT-4o Structured Output` 경로와 Azure Document Intelligence **Custom Neural** 구조화 추출을 병렬 실행
+- **결합**: Custom Neural의 고신뢰 식별·수치 필드는 confidence gate 후 보강하고, 신탁·경매·가처분 등 위험 플래그는 OR merge
 - **판정**: Python 룰 엔진 (공개된 임계값) → LLM이 판정 권한을 갖지 않음
 - **해석**: GPT-4o → 사용자가 이해할 수 있게 풀어서 설명
+- Custom Neural 호출 실패 시 Layout+LLM 경로로 fallback
 - 종합 점수는 의도적으로 만들지 않음 → 가중치 책임을 사용자에게 떠넘기지 않기 위해
+
+최종 Custom Neural 통합 코드는 [`feat/3-index-rag-transition`](https://github.com/liminal-cipher/isa-isangmu/tree/feat/3-index-rag-transition)에 보존되어 있다. 이 브랜치에서 `AZURE_DOCINTEL_CUSTOM_MODEL_ID`, `_extract_custom_fields()`, confidence 기반 merge 로직을 확인할 수 있다.
 
 <br>
 
@@ -63,7 +66,6 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 </picture>
 
 <br>
-
 
 ### 3. 꽉꽉봇 (RAG 챗봇)
 
@@ -83,7 +85,6 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 
 <br>
 
-
 ## Architecture
 
 <picture>
@@ -98,7 +99,7 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
   <img src="docs/architecture/data-preprocessing-light.png" alt="데이터 전처리 파이프라인" width="100%">
 </picture>
 
-데이터는 법제처 API · easylaw · 정부 기관 가이드 · 공공데이터포털 기반이며 모두 **공공누리 제1유형**(출처 표시) 라이선스를 따른다.
+데이터는 법제처 API · easylaw · 정부 기관 가이드 · 공공데이터포털 등 공식·공공 출처를 기반으로 수집했으며, 사용 시 각 원 출처의 이용조건과 출처 표시 요건을 따른다.
 
 ### 스택
 
@@ -107,7 +108,7 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 | 프론트엔드 | React Native (Expo) |
 | 백엔드 | FastAPI (Python) |
 | AI·검색 | Azure OpenAI (GPT-4o · text-embedding-3-small) · Azure AI Search |
-| 문서 처리 | Azure Document Intelligence (Custom Neural) |
+| 문서 처리 | Azure Document Intelligence (Custom Neural + Layout) |
 | 음성 | Azure Speech (STT) |
 | 저장 | Azure Blob Storage |
 
@@ -117,6 +118,7 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 | --- | --- | --- |
 | 인덱스 구조 | **3-index 분리** (단일 통합 대신) | 글을 찾아 읽는 데이터(법령·해설)와 정확한 값을 그대로 꺼내 쓰는 데이터(기관 연락처)는 성격이 달랐다. 데이터 종류별로 자체 인덱스를 갖게 하니 환각 없이 정확한 연락처를 제공하고, 기능마다 필요한 인덱스만 호출할 수 있게 됐다 |
 | 체크리스트 파이프라인 | **하이브리드** (단일 LLM 대신) | 처음에는 모든 조건을 LLM에 넘겼는데 같은 입력에도 매번 다른 출력이 나왔다. 토글 조건은 옵션이 정해져 있어 LLM이 필요 없다. 정형 조건은 정적 매핑, 자유 텍스트만 LLM으로 분리해 결정성과 호출 절감을 동시에 얻었다 |
+| 등기부 추출 | **Layout+LLM + Custom Neural 병렬 보강** | Layout+LLM 경로를 baseline/fallback으로 유지하고, Custom Neural의 고신뢰 필드와 위험 플래그를 confidence 기반으로 merge해 양식 변형에 대응했다 |
 | 등기부등본 판정 | **Python 룰 엔진** (LLM 판정 대신) | 위험·주의·안전 등급은 공개된 임계값으로 정할 수 있다. LLM에 판정 권한을 주면 근거를 설명할 수 없고 같은 문서에 다른 답이 나온다. LLM은 결과를 풀어 설명하는 자리에만 둔다 |
 | 종합 위험 점수 | **만들지 않음** | 점수를 내려면 근저당 규모와 지역 특성의 상대적 위험도에 가중치를 정해야 하는데, 그 근거가 없었다. 임의 가중치로 한 숫자를 만들면 그 판단의 책임이 사용자에게 넘어간다 |
 
@@ -125,14 +127,17 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 발표 기준 Golden Query 30건에서 **recall 96.9% · violations 0건**을 측정했다. repo에는 이후 60건으로 확장한 평가셋과 실행 리포트도 남아 있지만, 로컬 폴백 모드 결과라 최종 Azure 3-index 배포와 같은 조건의 수치로 보지 않는다. 3-index 전환 자체의 효과를 unified index와 A/B 비교한 실험은 하지 않았다.
 
 - **정량 평가는 있었지만 아키텍처 비교는 아니었다.** Golden Query는 최종 검색 품질을 확인했지만, unified index와 3-index를 같은 조건에서 비교하지는 않았다.
-- **Azure AI Search 인덱스는 코드로 재생성되지 않는다.** 3개 인덱스를 포털에서 직접 구성하고 데이터를 올렸기 때문에, repo를 clone해도 인덱스는 따라오지 않는다. 인프라를 코드로 관리하지 않은 상태이고, 지금은 구독 접근이 끊겨 원본 구성을 다시 확인할 수도 없다.
-- **등기부등본 추출은 Custom Neural 학습 모델에 묶여 있다.** 학습한 모델이 없으면 해당 기능이 동작하지 않는다. 학습 데이터는 팀이 라벨링한 것으로 repo에 없다.
+- **최종 구현과 team `main`은 다르다.** 3-index 전환과 Custom Neural 병렬 통합 코드는 feature branch에 보존됐지만 프로젝트 종료 전 team `main`에 머지되지 않았다. 따라서 `main`만 보면 unified-index·`prebuilt-layout` 중심의 이전 경로가 보인다.
+- **Azure AI Search 인덱스는 코드로 재생성되지 않는다.** 최종 law·guide·mapping 인덱스는 포털에서 직접 구성하고 데이터를 올렸기 때문에, repo를 clone해도 인덱스 자체는 따라오지 않는다. 인프라를 코드로 관리하지 않은 상태이고, 지금은 구독 접근이 끊겨 원본 구성을 다시 확인할 수도 없다.
+- **등기부등본 추출은 학습된 Custom Neural 모델에 의존한다.** feature branch에는 model ID 주입과 merge 로직이 남아 있지만 학습된 Azure 모델과 라벨링 데이터 자체는 repo에 없다.
 - **종합 위험 점수를 만들지 않은 것은 의도된 한계다.** 가중치를 정하는 순간 그 판단의 책임이 서비스로 넘어오는데, 근저당 규모와 지역 특성의 상대적 위험도를 근거 있게 정할 수 없었다.
 - 체크리스트의 자유 텍스트 경로는 LLM을 쓰므로 같은 입력에 같은 출력을 보장하지 않는다. 토글 경로만 결정적이다.
 
 ## Getting Started
 
-**필요한 Azure 리소스**: AI Search(`law-index`·`guide-index`·`mapping-index`), OpenAI(GPT-4o, text-embedding-3-small), Document Intelligence(등기부등본 Custom Neural 학습 모델), Speech(STT), Blob Storage. 키와 엔드포인트는 `.env.example`을 복사해 채운다.
+**현재 `main` 실행**: `.env.example`의 키와 엔드포인트를 채우면 이전 unified-index / Layout 중심 경로를 기준으로 실행할 수 있다.
+
+**최종 프로젝트 구성 재현**: AI Search(`law-index`·`guide-index`·`mapping-index`), OpenAI(GPT-4o, text-embedding-3-small), Document Intelligence Custom Neural 학습 모델, Speech(STT), Blob Storage가 필요하다. Custom Neural 통합 코드는 `feat/3-index-rag-transition`의 `AZURE_DOCINTEL_CUSTOM_MODEL_ID` 설정과 `safecontract_service.py`에 남아 있다.
 
 ```bash
 # 백엔드
@@ -142,7 +147,7 @@ docker compose up
 cd frontend && npm install && npx expo start
 ```
 
-위 Limitations에 적었듯 인덱스와 커스텀 모델은 이 repo에 포함되지 않는다. 인덱스 스키마를 새로 만들고 데이터를 적재해야 챗봇이 동작한다.
+최종 AI Search 인덱스와 학습된 Custom Neural 모델은 repo에 포함되지 않는다. 따라서 feature branch 코드만 checkout해도 최종 Azure 환경이 자동으로 복원되지는 않는다.
 
 ## Responsible AI
 
@@ -170,7 +175,7 @@ cd frontend && npm install && npx expo start
 | mapping-index 구축 | [`feat/4-index-rag-transition-mapping`](https://github.com/liminal-cipher/isa-isangmu/tree/feat/4-index-rag-transition-mapping)에서 mapping 전용 스키마·Azure 리소스와 122개 청크를 구축 |
 | 등기부등본 검증 | 위험·주의·안전 판정을 확인하는 테스트 시나리오 설계 |
 
-> 멀티 인덱스 전환안은 팀 `main`의 병행 개발 경로와 합쳐지지 않은 채 프로젝트가 끝나 최종 `main`에는 머지되지 않았다. 위 브랜치에 프로토타입과 전환 흔적이 남아 있다.
+> 멀티 인덱스 전환과 Custom Neural 통합안은 팀 `main`의 병행 개발 경로와 합쳐지지 않은 채 프로젝트가 끝나 최종 `main`에는 머지되지 않았다. 위 feature branch에 전환 코드와 검증 흔적이 남아 있다.
 
 ## Retrospective
 
@@ -182,4 +187,4 @@ cd frontend && npm install && npx expo start
 
 ## Status
 
-완료. Microsoft AI School 9기 2차 프로젝트로 2026.04.13 ~ 04.26 진행. Azure 구독 접근이 끊겨 현재는 실행할 수 없고, 코드와 발표 자료만 남아 있다. 마지막 갱신 2026-09-07.
+완료. Microsoft AI School 9기 2차 프로젝트로 2026.04.13 ~ 04.26 진행. Azure 구독 접근이 끊겨 현재는 실행할 수 없고, 코드와 발표 자료만 남아 있다. 마지막 갱신 2026-09-13.
