@@ -7,7 +7,7 @@
 ![Azure AI Search](https://img.shields.io/badge/Azure%20AI%20Search-3--index%20RAG-0078D4?logo=microsoftazure&logoColor=white)
 ![Azure OpenAI](https://img.shields.io/badge/Azure%20OpenAI-GPT--4o-412991)
 
-Microsoft AI School 9기 2차 프로젝트 · 팀 이문세 (6인) · 2026.04.13 ~ 04.26
+Microsoft AI School 9기 2차 프로젝트 · 팀 이문세 (6인) · 2026.04.10 ~ 2026.04.27
 
 [발표 자료](docs/presentation.pdf)
 
@@ -190,4 +190,4 @@ cd frontend && npm install && npx expo start
 
 ## Status
 
-완료. Microsoft AI School 9기 2차 프로젝트로 2026.04.13 ~ 04.26 진행. Azure 구독 접근이 끊겨 현재는 실행할 수 없고, 코드와 발표 자료만 남아 있다. 마지막 갱신 2026-09-13.
+완료. Microsoft AI School 9기 2차 프로젝트로 2026.04.10 ~ 2026.04.27 진행. Azure 구독 접근이 끊겨 현재는 실행할 수 없고, 코드와 발표 자료만 남아 있다. 마지막 갱신 2026-09-21.
