@@ -4,7 +4,7 @@ Saves each law as JSON (articles list) under backend/data/law/
 then chunks them into Azure AI Search index A format.
 
 Usage:
-  1) .env 의 LAW_OC 를 채운다
+  1) .env의 LAW_OC를 채운다
   2) python3 ingest_laws.py
 """
 from __future__ import annotations
@@ -140,7 +140,7 @@ LEGAL_TERMS = frozenset([
 def extract_keywords(text: str, title: str = "") -> list[str]:
     """법률 조문용 키워드 추출 — 3단계 병합.
 
-    1. title 에서 ( ) 안의 괄호 주제어 추출 (예: "제3조(대항력 등)" → "대항력")
+    1. title에서 ( ) 안의 괄호 주제어 추출 (예: "제3조(대항력 등)" → "대항력")
     2. 본문에서 LEGAL_TERMS 사전 매칭 (빈도 무관, 있으면 바로 채택)
     3. 2회 이상 등장한 한글 2자+ 단어
     4. fallback: 3자 이상 한글 단어 1회 등장 (짧은 조문용)
@@ -200,7 +200,7 @@ def extract_keywords(text: str, title: str = "") -> list[str]:
     return result
 
 
-# RAG 품질 필터 — 아래 유형은 Index A 에서 제외:
+# RAG 품질 필터 — 아래 유형은 Index A에서 제외:
 #   1) 폐지된 조문 ("제5조 삭제 <1989.12.30>", "제36조의2 삭제 <2020.6.9>")
 #   2) 장·절·관·편 헤더 ("제1장 총칙", "제2절 동물의 보호 등")
 #   3) 40자 미만의 의미 없는 토막 (제목만 있는 stub)

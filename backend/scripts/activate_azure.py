@@ -1,6 +1,6 @@
 """Azure 활성화 원샷 스크립트.
 
-.env 에 Azure 키를 채운 후 실행:
+.env에 Azure 키를 채운 후 실행:
   python3 backend/scripts/activate_azure.py
 
 단계:
@@ -48,7 +48,7 @@ def main() -> None:
 
     # 1. 환경변수 검증
     step(1, TOTAL, "환경변수 검증")
-    # get_settings() 를 새로 부르려면 캐시 지워야 함
+    # get_settings()를 새로 부르려면 캐시 지워야 함
     from backend.app import config as _cfg
     _cfg.get_settings.cache_clear()
     s = get_settings()

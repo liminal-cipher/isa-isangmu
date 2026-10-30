@@ -288,7 +288,7 @@ export const api = {
   },
   async safecontractUpload(params: SafeContractUploadParams): Promise<SafeContractResponse> {
     const form = new FormData();
-    // React Native FormData 는 {uri, name, type} 객체를 받음
+    // React Native FormData는 {uri, name, type} 객체를 받음
     form.append('file', {
       uri: params.uri,
       name: params.name,

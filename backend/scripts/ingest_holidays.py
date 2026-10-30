@@ -44,7 +44,7 @@ def main() -> None:
         all_holidays.extend(items)
         print(f"  {year}-{m:02d}: {len(items)}건")
 
-    # Normalize
+    # Normalise
     normalized = []
     for h in all_holidays:
         loc = h.get("locdate", "")

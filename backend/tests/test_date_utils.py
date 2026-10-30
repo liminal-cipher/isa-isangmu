@@ -14,7 +14,7 @@ def test_load_holidays_has_entries():
     """2026 공휴일 파일이 존재하고 최소 20건 이상 로드되어야 함."""
     holidays = load_holidays()
     assert len(holidays) >= 20
-    # 2026-01-01 (신정) 은 반드시 포함
+    # 2026-01-01 (신정)은 반드시 포함
     assert date(2026, 1, 1) in holidays
 
 

@@ -23,17 +23,17 @@
 | `ingest_youtube.py` | `data/raw/youtube_transcripts/*.json` | 유튜브 이사 팁 영상 자막 |
 | `ingest_holidays.py` | `data/raw/holidays_2026.json` | 공공데이터 공휴일 (D-day 계산용) |
 
-> NOTE: `ingest_youtube.py` 와 `data/raw/youtube_transcripts/*.json` 은 저작권 우려로
+> NOTE: `ingest_youtube.py`와 `data/raw/youtube_transcripts/*.json`은 저작권 우려로
 > 2026-04-23 제거됨. 챗봇은 law + guide 2개 인덱스만 사용.
 
 ### 2. Preprocess — 청킹·메타 주입
 
-수집한 raw JSON 을 AI Search 에 넣기 좋은 청크로 가공.
+수집한 raw JSON을 AI Search에 넣기 좋은 청크로 가공.
 
 | 스크립트 | 설명 |
 |---------|------|
 | `chunk_easylaw.py` | guide JSON → 700자 목표 청크 (`guide_chunks.jsonl`) |
-| `annotate_sources.py` | 모든 JSON 에 `_source_metadata` 필드 주입 + DATA_SOURCES.md 카탈로그 생성 |
+| `annotate_sources.py` | 모든 JSON에 `_source_metadata` 필드 주입 + DATA_SOURCES.md 카탈로그 생성 |
 
 ### 3. Index — 통합 인덱스 빌드·업로드
 
@@ -100,6 +100,6 @@
 ## 주의사항
 
 - 모든 스크립트는 **프로젝트 루트에서 실행** 기준: `cd backend && python scripts/xxx.py`
-- `upload_to_search.py` 는 **Azure 요금 발생** (OpenAI 임베딩 API 호출)
+- `upload_to_search.py`는 **Azure 요금 발생** (OpenAI 임베딩 API 호출)
 - 대용량 파일(`index_unified_embeddings.jsonl` 65MB)은 git 비추적 (`.gitignore` 권장)
 - 실행 전 `.env` 필수 (관련 키 없으면 fail-fast)

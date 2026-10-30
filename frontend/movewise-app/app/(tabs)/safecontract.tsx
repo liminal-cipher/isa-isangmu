@@ -84,7 +84,7 @@ export default function SafeContractScreen() {
   const [result, setResult] = useState<SafeContractResponse | null>(null);
   const loadingMessage = useRotatingText(SAFECONTRACT_LOADING_STEPS, loading, 2500);
 
-  // 체크리스트에 저장된 region 을 기본값으로 자동 불러옴
+  // 체크리스트에 저장된 region을 기본값으로 자동 불러옴
   useFocusEffect(
     useCallback(() => {
       (async () => {
@@ -225,7 +225,7 @@ export default function SafeContractScreen() {
                 <ModeButton
                   icon="camera"
                   label="사진"
-                  badge="준비중"
+                  badge="준비 중"
                   active={false}
                   disabled
                   onPress={handlePhotoDisabled}
@@ -318,14 +318,14 @@ export default function SafeContractScreen() {
                           PDF 파일 선택
                         </Text>
                         <Text style={styles.pdfDropzoneSub}>
-                          최대 20MB, .pdf 만 지원
+                          최대 20MB, .pdf만 지원
                         </Text>
                       </>
                     )}
                   </Pressable>
                 </>
               )}
-              {/* 지역 — 텍스트 모드일 때만 표시 (PDF 는 주소에서 자동 파싱) */}
+              {/* 지역 — 텍스트 모드일 때만 표시 (PDF는 주소에서 자동 파싱) */}
               {mode === 'text' && (
                 <>
                   <Text style={styles.sectionLabel}>지역 (자동 시세 조회)</Text>
@@ -353,7 +353,7 @@ export default function SafeContractScreen() {
                 <View style={styles.autoInfoCard}>
                   <Ionicons name="sparkles" size={16} color={colors.primary} />
                   <Text style={styles.autoInfoText}>
-                    주소·면적·소유자·시세 전부 PDF 에서 자동 추출해요.{'\n'}
+                    주소·면적·소유자·시세 전부 PDF에서 자동 추출해요.{'\n'}
                     <Text style={{ fontWeight: '800' }}>보증금만 입력</Text>하시면 돼요.
                   </Text>
                 </View>
@@ -374,7 +374,7 @@ export default function SafeContractScreen() {
                     {formatKoreanAmount(deposit) || '금액 입력'}
                   </Text>
                 </View>
-                {/* 텍스트 모드만 직접 시세 입력, PDF 는 자동 */}
+                {/* 텍스트 모드만 직접 시세 입력, PDF는 자동 */}
                 {mode === 'text' && (
                   <View style={{ flex: 1 }}>
                     <Text style={styles.sectionLabel}>시세 (모르면 비워두세요)</Text>

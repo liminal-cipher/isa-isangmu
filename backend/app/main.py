@@ -194,10 +194,10 @@ async def post_safecontract_upload(
 ) -> SafeContractResponse:
     """등기부등본 PDF 업로드 → Document Intelligence 파싱 → 기존 분석.
 
-    기획서 3.5.2 P1 목표. Azure Document Intelligence 가 설정돼야 동작.
+    기획서 3.5.2 P1 목표. Azure Document Intelligence가 설정돼야 동작.
 
-    expected_market_price_krw = 0 이고 region 이 비어있으면 PDF 에서 주소 파싱 후
-    국토부 실거래가 API 로 시세 자동 조회.
+    expected_market_price_krw = 0이고 region이 비어있으면 PDF에서 주소 파싱 후
+    국토부 실거래가 API로 시세 자동 조회.
     """
     if not file.filename or not file.filename.lower().endswith((".pdf",)):
         raise HTTPException(status_code=400, detail="PDF 파일만 업로드 가능합니다")

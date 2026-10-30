@@ -38,6 +38,6 @@ pytest -v --tb=short
 ## 원칙
 
 - **Azure 호출 X** — 테스트는 Azure 키 없이 돌려도 OK
-- 외부 API 는 `monkeypatch` 로 mock
-- 실제 데이터 파일은 `tests/fixtures/` 에 미니 샘플 (대용량 금지)
+- 외부 API는 `monkeypatch`로 mock
+- 실제 데이터 파일은 `tests/fixtures/`에 미니 샘플 (대용량 금지)
 - 새 기능 추가 시 최소 happy path + 에러 케이스 1개씩

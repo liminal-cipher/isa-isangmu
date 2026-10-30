@@ -1,8 +1,8 @@
 /**
  * 크로스 플랫폼 확인창 — 웹에서는 window.confirm, 네이티브에서는 Alert.alert.
  *
- * React Native Web 의 Alert.alert 는 버튼 콜백이 동작하지 않아 확인창이 무시된다.
- * 이 헬퍼는 두 플랫폼 모두에서 await 로 결과를 받을 수 있게 추상화한다.
+ * React Native Web의 Alert.alert는 버튼 콜백이 동작하지 않아 확인창이 무시된다.
+ * 이 헬퍼는 두 플랫폼 모두에서 await로 결과를 받을 수 있게 추상화한다.
  */
 import { Alert, Platform } from 'react-native';
 

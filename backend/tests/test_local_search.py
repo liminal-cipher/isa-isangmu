@@ -47,7 +47,7 @@ def test_search_empty_query_returns_nothing():
 
 
 def test_find_law_article_exact_match():
-    """주민등록법 제16조는 Index A 에 반드시 존재."""
+    """주민등록법 제16조는 Index A에 반드시 존재."""
     found = find_law_article("주민등록법", "제16조")
     assert found is not None
     assert "전입" in (found.get("content") or "")
@@ -68,8 +68,8 @@ def test_find_law_article_not_found():
 
 
 def test_get_article_text_truncates():
-    """긴 조문은 max_chars 로 잘림."""
-    # 주민등록법 제16조 — 길지 않을 수 있으니 짧은 max_chars 로 테스트
+    """긴 조문은 max_chars로 잘림."""
+    # 주민등록법 제16조 — 길지 않을 수 있으니 짧은 max_chars로 테스트
     text = get_article_text("주민등록법", "제16조", max_chars=50)
     if text:
         assert len(text) <= 51  # "…" 1자 포함

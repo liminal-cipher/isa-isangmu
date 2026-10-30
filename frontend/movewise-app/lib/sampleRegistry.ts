@@ -22,7 +22,7 @@ export interface RegistrySample {
  *   - 2년 내 소유권 이전 2건 → 주의
  *
  * 각 라인은 백엔드 regex(`근저당권\s*설정[^\n]*?금\s*...`) 매치를 위해
- * "근저당권설정 ... 채권최고액 금 X원" 을 한 줄에 둠. 금액은 `억원` 또는
+ * "근저당권설정 ... 채권최고액 금 X원"을 한 줄에 둠. 금액은 `억원` 또는
  * `N만원` 포맷만 사용 (parser가 "천" 문자 미지원).
  */
 export const RISKY_REGISTRY: RegistrySample = {

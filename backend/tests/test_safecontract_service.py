@@ -62,7 +62,7 @@ def test_ratios_risky_sample():
     e = RegistryExtraction(mortgage_total_krw=332_000_000)
     jeontse, mortgage, level = _compute_ratios(e, deposit=200_000_000, market=250_000_000)
     assert jeontse == 0.8  # 보증금만 보면 80% (유저에게 이게 보임)
-    assert mortgage == 1.328  # 근저당비율 (내부 계산, display 에서는 "근저당이 시세 초과" 텍스트)
+    assert mortgage == 1.328  # 근저당비율 (내부 계산, display에서는 "근저당이 시세 초과" 텍스트)
     assert level == "red"  # 근저당+보증금 합 = 2.128 >= 1.0
 
 
@@ -90,7 +90,7 @@ def test_ratios_yellow_zone_high_jeontse():
 
 
 def test_ratios_market_zero_returns_safe_default():
-    """시세 0 이면 계산 불가 → 기본값 반환."""
+    """시세 0이면 계산 불가 → 기본값 반환."""
     e = RegistryExtraction(mortgage_total_krw=100_000_000)
     jeontse, mortgage, level = _compute_ratios(e, deposit=100_000_000, market=0)
     assert jeontse == 0.0

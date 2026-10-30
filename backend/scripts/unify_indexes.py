@@ -9,14 +9,14 @@
   backend/data/indexes/index_unified.jsonl
   backend/data/indexes/index_unified_summary.json
 
-변환 규칙 (source_type 별):
+변환 규칙 (source_type별):
   - law       → A 필드 매핑 + title 보존 (조문제목), law_name/article 채움
   - procedure → B 필드 그대로, doc_title → title
   - video     → C 필드 매핑, video_title → title, deep_link/timecode 보존
 
 크로스 링크:
-  - 원본 jsonl 의 related_procedures/related_videos 는 원본 ID 기반 →
-    unified ID (safe hash) 로 재매핑해서 깨지지 않게 유지
+  - 원본 jsonl의 related_procedures/related_videos는 원본 ID 기반 →
+    unified ID (safe hash)로 재매핑해서 깨지지 않게 유지
 
 Usage:
   python3 backend/scripts/unify_indexes.py

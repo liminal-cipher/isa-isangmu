@@ -1,10 +1,10 @@
 """지역별 서비스 매핑 유틸 — 체크리스트 항목에 지역 맞춤 정보 주입.
 
-이사이상무 의 fallback 체크리스트가 하드코딩 '해당 지역 수도사업소' 대신
+이사이상무의 fallback 체크리스트가 하드코딩 '해당 지역 수도사업소' 대신
 실제 '성남시 상하수도사업소 031-729-3114' 같은 정확한 정보를 넣을 수 있도록
 매핑 파일(`backend/data/mapping/*.json`)을 조회한다.
 
-LLM 경로(structure_checklist_llm)에서도 같은 유틸을 써서 프롬프트 context 에
+LLM 경로(structure_checklist_llm)에서도 같은 유틸을 써서 프롬프트 context에
 매핑 데이터를 주입할 수 있음.
 """
 from __future__ import annotations
@@ -275,7 +275,7 @@ def enrich_item_with_region(item: dict, region: Optional[str]) -> dict:
 
     체크리스트 generate 단계 맨 끝에서 호출. category 기반으로 적절한 매핑 조회
     후 method/contact/region_hint 필드를 실제 값으로 덮어쓰거나 추가.
-    원본 item 을 변경하지 않고 새 dict 반환.
+    원본 item을 변경하지 않고 새 dict 반환.
     """
     out = dict(item)
     cat = (item.get("category") or "").strip()

@@ -28,10 +28,10 @@ class DocumentIntelligenceNotConfigured(RuntimeError):
 
 
 def extract_text_from_pdf(file_bytes: bytes) -> str:
-    """Azure Document Intelligence 의 `prebuilt-layout` 모델로 PDF → 텍스트 변환.
+    """Azure Document Intelligence의 `prebuilt-layout` 모델로 PDF → 텍스트 변환.
 
     등기부등본은 갑구/을구가 표 구조라 layout 모델이 가장 적합.
-    테이블 셀도 content 에 순서대로 포함되므로 평문으로 반환.
+    테이블 셀도 content에 순서대로 포함되므로 평문으로 반환.
 
     Raises:
         DocumentIntelligenceNotConfigured: Azure 키 미설정 시
@@ -39,11 +39,11 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
     client = get_docintel_client()
     if client is None:
         raise DocumentIntelligenceNotConfigured(
-            "Azure Document Intelligence 가 설정되지 않았습니다. "
-            ".env 의 AZURE_DOCINTEL_ENDPOINT 와 AZURE_DOCINTEL_API_KEY 를 입력하세요."
+            "Azure Document Intelligence가 설정되지 않았습니다. "
+            ".env의 AZURE_DOCINTEL_ENDPOINT와 AZURE_DOCINTEL_API_KEY를 입력하세요."
         )
 
-    # SDK v1.0 은 analyze_document 에 AnalyzeDocumentRequest(bytes_source=...) 전달
+    # SDK v1.0은 analyze_document에 AnalyzeDocumentRequest(bytes_source=...) 전달
     from azure.ai.documentintelligence.models import AnalyzeDocumentRequest
 
     poller = client.begin_analyze_document(
@@ -69,7 +69,7 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
 def _parse_region_from_address(address: Optional[str]) -> Optional[str]:
     """추출된 주소 문자열에서 '시/도 + 시/군/구' 부분 추출.
 
-    PDF layout 의 raw text(헤더·표 메타가 앞에 있음)에도 적용 가능하도록
+    PDF layout의 raw text(헤더·표 메타가 앞에 있음)에도 적용 가능하도록
     re.search 사용. 첫 매칭 우선.
 
     예: '...등기사항전부증명서...서울특별시 강남구 역삼동 123-45 ...'
@@ -101,14 +101,14 @@ def analyze_safecontract_pdf(
 
     기획서 3.5.2 P1 목표 — Azure Document Intelligence 연결 시 활성화.
 
-    region 이 None 이면 추출된 주소에서 자동 파싱 (사용자가 시세 몰라도 자동 조회).
+    region이 None이면 추출된 주소에서 자동 파싱 (사용자가 시세 몰라도 자동 조회).
     """
     text = extract_text_from_pdf(file_bytes)
     if not text:
-        raise ValueError("PDF 에서 텍스트를 추출하지 못했습니다. 스캔 품질을 확인하세요.")
+        raise ValueError("PDF에서 텍스트를 추출하지 못했습니다. 스캔 품질을 확인하세요.")
 
     # region 자동 유도: (1) 사용자 명시 > (2) 레이아웃 텍스트에서 직접 정규식 파싱
-    # LLM 두 번 호출 피하려고 raw text 에서 먼저 시/도+시군구 패턴 찾음
+    # LLM 두 번 호출 피하려고 raw text에서 먼저 시/도+시군구 패턴 찾음
     effective_region = region or _parse_region_from_address(text)
 
     req = SafeContractRequest(
@@ -199,7 +199,7 @@ EXPLAIN_SYSTEM = """당신은 부동산 등기부등본 해석 도우미입니�
 
 
 def _extract_with_llm(text: str) -> RegistryExtraction:
-    """GPT-4o + Structured Output (json_schema strict 모드) 로 등기부 파싱.
+    """GPT-4o + Structured Output (json_schema strict 모드)로 등기부 파싱.
 
     스키마 100% 준수 보장 — 필드 누락/타입 오류 없이 RegistryExtraction 반환.
     실패 시 rule-based regex 폴백.
@@ -212,7 +212,7 @@ def _extract_with_llm(text: str) -> RegistryExtraction:
     # json_schema strict 모드 — additionalProperties: false 필수
     schema = RegistryExtraction.model_json_schema()
     schema["additionalProperties"] = False
-    # 모든 필드를 required 로 (strict 모드 요구사항, Optional 은 null 허용)
+    # 모든 필드를 required로 (strict 모드 요구사항, Optional은 null 허용)
     if "properties" in schema:
         schema["required"] = list(schema["properties"].keys())
 
@@ -241,7 +241,7 @@ def _extract_with_llm(text: str) -> RegistryExtraction:
         logging.getLogger("movewise").warning(
             f"_extract_with_llm (json_schema) 실패: {type(exc).__name__}: {exc} — json_object 모드로 재시도"
         )
-        # json_schema 미지원 시 json_object 로 폴백
+        # json_schema 미지원 시 json_object로 폴백
         try:
             resp = client.chat.completions.create(
                 model=settings.azure_openai_deployment_name,
@@ -695,8 +695,8 @@ def analyze_safecontract(req: SafeContractRequest) -> SafeContractResponse:
 
     extraction = _extract_with_llm(req.text)
 
-    # region 우선순위: (1) 사용자 명시 (2) LLM 이 추출한 address 에서 파싱 (3) raw text 파싱
-    # LLM 이 address 를 정제해서 주니까 정규식 매칭 훨씬 안정적
+    # region 우선순위: (1) 사용자 명시 (2) LLM이 추출한 address에서 파싱 (3) raw text 파싱
+    # LLM이 address를 정제해서 주니까 정규식 매칭 훨씬 안정적
     effective_region = (
         req.region
         or _parse_region_from_address(extraction.address)
@@ -705,7 +705,7 @@ def analyze_safecontract(req: SafeContractRequest) -> SafeContractResponse:
     market = _fetch_market_estimate(effective_region)
     effective_market_price = req.expected_market_price_krw
     if effective_market_price <= 0 and market and market.median_price_krw:
-        # 건물 용도별 시세 보정 — 국토부 API 는 아파트 기준
+        # 건물 용도별 시세 보정 — 국토부 API는 아파트 기준
         # 다세대·빌라·단독주택은 같은 지역 아파트보다 저렴하므로 보정계수 적용
         # (실거래 통계 기반 경험치, 발표 후 연립·다세대 API 직접 호출로 개선 예정)
         use = (extraction.building_use or "").lower()
@@ -718,7 +718,7 @@ def analyze_safecontract(req: SafeContractRequest) -> SafeContractResponse:
         else:  # 아파트 or 미상
             correction = 1.0
         effective_market_price = int(market.median_price_krw * correction)
-        # market_estimate 에 보정 사실 기록 (프론트 표시용)
+        # market_estimate에 보정 사실 기록 (프론트 표시용)
         if correction < 1.0 and market:
             market.error = (
                 f"⚠ {extraction.building_use} 는 아파트 실거래가보다 저렴함. "

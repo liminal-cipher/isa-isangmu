@@ -473,7 +473,7 @@ def get_source_metadata(pattern: str) -> dict:
     카탈로그 정의는 이 파일의 SOURCES 리스트가 단일 출처(single source of truth).
 
     Raises:
-        KeyError: SOURCES 에 해당 pattern 키 없을 때.
+        KeyError: SOURCES에 해당 pattern 키 없을 때.
     """
     for src in SOURCES:
         if src["pattern"] == pattern:
@@ -489,7 +489,7 @@ def annotate_json_file(path: Path, source: dict) -> bool:
         return False
 
     if not isinstance(data, dict):
-        return False  # jsonl 은 별도 처리 안 함 (로드 시점 오버헤드)
+        return False  # jsonl은 별도 처리 안 함 (로드 시점 오버헤드)
 
     data["_source_metadata"] = build_source_metadata(source)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")

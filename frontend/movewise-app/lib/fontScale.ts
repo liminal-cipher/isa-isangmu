@@ -3,9 +3,9 @@
  *
  * 동작 원리:
  *  1. MY 탭에서 일반/큼/아주 큼 3단계 선택 → AsyncStorage 영속화
- *  2. lib/AppText 의 Text wrapper 가 useFontScaleLevel() 로 구독
- *  3. 각 Text 는 자신의 base fontSize/lineHeight 에 SCALE_FACTORS 를 곱해서 렌더
- *  4. 레벨 변경 시 리스너가 모든 AppText 를 리렌더시켜 즉시 반영
+ *  2. lib/AppText의 Text wrapper가 useFontScaleLevel()로 구독
+ *  3. 각 Text는 자신의 base fontSize/lineHeight에 SCALE_FACTORS를 곱해서 렌더
+ *  4. 레벨 변경 시 리스너가 모든 AppText를 리렌더시켜 즉시 반영
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
@@ -34,8 +34,8 @@ export async function loadFontScale(): Promise<FontScaleLevel> {
     const v = (await AsyncStorage.getItem(STORAGE_KEY)) as FontScaleLevel | null;
     if (v && v in SCALE_FACTORS && v !== currentScale) {
       currentScale = v;
-      // UI 가 이미 렌더된 상태에서 저장값을 나중에 로드할 수 있으므로
-      // listener 에 알려 AppText 들이 새 scale 로 재렌더되게 함.
+      // UI가 이미 렌더된 상태에서 저장값을 나중에 로드할 수 있으므로
+      // listener에 알려 AppText들이 새 scale로 재렌더되게 함.
       listeners.forEach((l) => l(v));
       return v;
     }

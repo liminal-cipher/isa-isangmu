@@ -75,7 +75,7 @@ FILE_PATTERN: dict[str, str] = {
     "hug_default_list.json": "mapping_table",
     # --- Pattern E: Multi-level service ---
     "school_transfer.json": "multi_level",
-    # --- Pattern F: Categorized sub-services ---
+    # --- Pattern F: Categorised sub-services ---
     "gov24_services.json": "categorized_sub",
     # --- Pattern G: Structured guide ---
     "moveout_timeline.json": "guide_phases",
@@ -233,7 +233,7 @@ def get_region_aliases(region: str) -> list[str]:
 
 
 def listify(v: Any) -> list[str]:
-    """값을 Collection(Edm.String) 으로 변환."""
+    """값을 Collection(Edm.String)으로 변환."""
     if v is None:
         return []
     if isinstance(v, str):
@@ -495,7 +495,7 @@ def handle_multi_provider(raw: dict, source_id: str) -> list[dict]:
 # ============================================================
 
 def handle_mapping_table(raw: dict, source_id: str) -> list[dict]:
-    """entries 를 region 단위로 group by → 광역 청크."""
+    """entries를 region 단위로 group by → 광역 청크."""
     chunks: list[dict] = []
     meta = raw.get("_source_metadata", {})
     service = meta.get("category") or source_id
@@ -634,7 +634,7 @@ def handle_multi_level(raw: dict, source_id: str) -> list[dict]:
 
 
 # ============================================================
-# Pattern F: Categorized sub-services (gov24_services)
+# Pattern F: Categorised sub-services (gov24_services)
 # ============================================================
 
 def handle_categorized_sub(raw: dict, source_id: str) -> list[dict]:

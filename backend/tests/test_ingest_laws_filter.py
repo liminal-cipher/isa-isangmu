@@ -8,7 +8,7 @@ Index A (법률 청크) 생성 시 제외해야 하는 유형:
 import sys
 from pathlib import Path
 
-# backend/scripts 경로 추가 (ingest_laws 는 module 아닌 script 로 작성됨)
+# backend/scripts 경로 추가 (ingest_laws는 module 아닌 script로 작성됨)
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from ingest_laws import should_skip_article, is_deleted_article  # noqa: E402
@@ -22,7 +22,7 @@ def test_skip_basic_deleted_article():
 
 
 def test_skip_deleted_with_subarticle():
-    """제N조의M 삭제 형태도 필터링 (이전 regex 에서 놓치던 케이스)."""
+    """제N조의M 삭제 형태도 필터링 (이전 regex에서 놓치던 케이스)."""
     assert should_skip_article("제36조의2 삭제 <2020.6.9>")
 
 
@@ -52,7 +52,7 @@ def test_skip_pyeon_header():
 
 
 def test_skip_stub_article_number_only():
-    """'제2조의2' 처럼 번호만 있는 stub (5자)."""
+    """'제2조의2'처럼 번호만 있는 stub (5자)."""
     assert should_skip_article("제2조의2")
 
 

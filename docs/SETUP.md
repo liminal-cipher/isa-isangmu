@@ -20,7 +20,7 @@
 - **Git** — 레포 clone
 - **Azure 구독** — `대한상공회의소 AI School` 구독에 Contributor 권한
 - **본인 팀 리소스 그룹** — 예: `9ai-2nd-team5` (학원 운영자가 미리 생성해줘야 함)
-- (선택) **Azure CLI** `az` — Portal 대신 CLI 로 작업할 때
+- (선택) **Azure CLI** `az` — Portal 대신 CLI로 작업할 때
 
 **⚠️ 주의:** 다른 팀 리소스 그룹(`9ai-2nd-team4` 등)은 절대 건드리지 않는다.
 
@@ -59,11 +59,11 @@ curl http://127.0.0.1:8765/
 
 ### ⚠️ 꼭 지킬 것
 
-1. **AI Search 는 Standard S1 필수** — Free 티어는 벡터 검색 제한으로 실패함
+1. **AI Search는 Standard S1 필수** — Free 티어는 벡터 검색 제한으로 실패함
 2. **임베딩 모델은 `text-embedding-3-small`** — 차원 1536이 기본 스키마와 호환
-   - `-large` 를 쓰면 3072차원이라 `backend/schemas/index_*.json` 의 `dimensions` 필드 수정 필요
+   - `-large`를 쓰면 3072차원이라 `backend/schemas/index_*.json`의 `dimensions` 필드 수정 필요
 3. **GPT-4o quota 거부 시** East US 2 → East US → Sweden Central 순으로 리전 시도
-4. **배포명(Deployment name)** 을 `.env` 에 정확히 복사 (`gpt-4o`, `text-embedding-3-small`)
+4. **배포명(Deployment name)을** `.env`에 정확히 복사 (`gpt-4o`, `text-embedding-3-small`)
 
 ### 생성 순서
 
@@ -82,7 +82,7 @@ curl http://127.0.0.1:8765/
 cp .env.example .env
 ```
 
-`.env` 를 편집해서 다음 값을 채운다:
+`.env`를 편집해서 다음 값을 채운다:
 
 ```bash
 # ===== 기존 공공데이터 API (팀장에게 받기) =====
@@ -112,7 +112,7 @@ AZURE_BLOB_CONNECTION_STRING=
 AZURE_BLOB_CONTAINER_NAME=moving-guide-docs
 ```
 
-**⚠️ Admin key 이어야 함** — Search 는 Query Key 가 아니라 Primary admin key 를 써야 인덱스 생성이 가능하다.
+**⚠️ Admin key이어야 함** — Search는 Query Key가 아니라 Primary admin key를 써야 인덱스 생성이 가능하다.
 
 ---
 
@@ -160,7 +160,7 @@ python3 backend/scripts/smoke_test.py
 팀 공용 Render 배포에도 같은 환경변수를 반영해야 프론트 앱에서 Azure 모드로 접속된다.
 
 1. Render 대시보드 → `movewise` 서비스 → **Environment** 탭
-2. `.env` 에 넣은 Azure 키를 **Add Environment Variable** 로 그대로 8개 추가
+2. `.env`에 넣은 Azure 키를 **Add Environment Variable**로 그대로 8개 추가
    - `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_DEPLOYMENT_NAME`,
      `AZURE_OPENAI_EMBED_DEPLOYMENT`, `AZURE_SEARCH_ENDPOINT`, `AZURE_SEARCH_API_KEY`,
      `AZURE_DOCINTEL_ENDPOINT`, `AZURE_DOCINTEL_API_KEY`
@@ -177,10 +177,10 @@ python3 backend/scripts/smoke_test.py
 
 Expo Go 또는 시뮬레이터로:
 
-- **마이 탭 상단 배지**: `🔧 Local fallback 모드` → **`🧠 Azure LLM 모드`** 로 변경
+- **마이 탭 상단 배지**: `🔧 Local fallback 모드` → **`🧠 Azure LLM 모드`로** 변경
 - **체크리스트 탭**: 새 체크리스트 생성 시 warning 메시지 사라짐
 - **계약 전 체크 탭**: **PDF 업로드 버튼 활성화** → 등기부 PDF 파싱 실제 동작
-- **체크리스트 항목 상세**: 법 조항 원문이 LLM 이 동적으로 검색한 결과로 표시됨
+- **체크리스트 항목 상세**: 법 조항 원문이 LLM이 동적으로 검색한 결과로 표시됨
 
 ---
 
@@ -189,13 +189,13 @@ Expo Go 또는 시뮬레이터로:
 | 증상 | 원인 / 해결 |
 |---|---|
 | `리소스 그룹 생성 권한 없음` | 학생 계정은 구독 권한 없음. 학원 운영자에게 RG 생성 요청 |
-| `dimensions=3072` 경고 | text-embedding-3-**large** 사용 중 → `schemas/index_*.json` 의 `dimensions` 3072 로 수정 |
-| Search API `403 Forbidden` | Primary admin key 가 아닌 Query Key 사용 중. Portal → Keys → Primary admin key 복사 |
-| `429 rate limit` (OpenAI) | quota 초과. `activate_azure.py` 의 batch size 16 → 8 로 조정 후 재실행 |
-| 업로드 성공했는데 `/checklist` 가 여전히 fallback | 백엔드 재시작 안 됨. `pkill -f uvicorn` 후 다시 띄우기 (`lru_cache` 초기화 필요) |
+| `dimensions=3072` 경고 | text-embedding-3-**large** 사용 중 → `schemas/index_*.json`의 `dimensions` 3072로 수정 |
+| Search API `403 Forbidden` | Primary admin key가 아닌 Query Key 사용 중. Portal → Keys → Primary admin key 복사 |
+| `429 rate limit` (OpenAI) | quota 초과. `activate_azure.py`의 batch size 16 → 8로 조정 후 재실행 |
+| 업로드 성공했는데 `/checklist`가 여전히 fallback | 백엔드 재시작 안 됨. `pkill -f uvicorn` 후 다시 띄우기 (`lru_cache` 초기화 필요) |
 | Render 재배포 후 여전히 fallback | Environment 저장 실패 또는 Manual Deploy 필요. Render → Manual Deploy → Clear build cache & deploy |
 | GPT-4o 배포가 안 만들어짐 | 리전 quota 문제. East US 2 → East US → Sweden Central 순으로 시도 |
-| Document Intelligence 응답이 엉성 | 등기부 PDF 스캔 품질 확인. `prebuilt-layout` 모델은 텍스트 기반 PDF 에 최적 |
+| Document Intelligence 응답이 엉성 | 등기부 PDF 스캔 품질 확인. `prebuilt-layout` 모델은 텍스트 기반 PDF에 최적 |
 
 ---
 
@@ -206,7 +206,7 @@ Expo Go 또는 시뮬레이터로:
 - [ ] `python3 backend/scripts/smoke_test.py` → 5/5 passed
 - [ ] `backend/data/indexes/evaluation_report.json` → mean recall ≥ 0.95
 - [ ] Expo 앱 마이 탭에 **🧠 Azure LLM 모드** 배지 표시
-- [ ] 체크리스트 생성 시 `used_queries` 가 LLM 이 만든 자연어 쿼리 (하드코딩 아님)
+- [ ] 체크리스트 생성 시 `used_queries`가 LLM이 만든 자연어 쿼리 (하드코딩 아님)
 - [ ] 계약 전 체크 탭에서 PDF 업로드 → 파싱 결과 표시
 
 7개 체크하면 Azure 연결 완료.

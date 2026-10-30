@@ -1,8 +1,8 @@
 """유튜브 자막 크롤링 → 청크 변환 → Index C JSONL 생성.
 
 이사이상무 챗봇의 추가 지식 소스(Index C)를 만드는 스크립트.
-youtube-transcript-api 로 무료로 공식/자동 자막을 받고,
-oEmbed 로 제목·채널을 가져와서 메타데이터 부착.
+youtube-transcript-api로 무료로 공식/자동 자막을 받고,
+oEmbed로 제목·채널을 가져와서 메타데이터 부착.
 
 Usage:
   python3 backend/scripts/ingest_youtube.py
@@ -91,7 +91,7 @@ CATEGORY_KEYWORDS = {
 
 
 def fetch_metadata(vid: str) -> dict:
-    """oEmbed API 로 영상 제목·채널 메타데이터 가져오기 (무료, 인증 불필요)."""
+    """oEmbed API로 영상 제목·채널 메타데이터 가져오기 (무료, 인증 불필요)."""
     url = f"https://www.youtube.com/oembed?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D{quote(vid)}&format=json"
     try:
         r = requests.get(url, timeout=10)
@@ -135,9 +135,9 @@ def chunk_transcript(
     target_chars: int = TARGET_CHARS,
     max_chars: int = MAX_CHARS,
 ) -> list[dict]:
-    """시간순으로 snippet 을 target_chars 에 가깝게 묶어 청크 생성.
+    """시간순으로 snippet을 target_chars에 가깝게 묶어 청크 생성.
 
-    각 청크는 start_seconds / end_seconds 를 갖고, 내용은 snippet 텍스트를
+    각 청크는 start_seconds / end_seconds를 갖고, 내용은 snippet 텍스트를
     공백으로 이어붙인 평문.
     """
     chunks: list[dict] = []

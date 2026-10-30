@@ -32,7 +32,7 @@ Microsoft AI School 9기 2차 프로젝트 · 팀 이문세 (6인) · 2026.04.10
 조건을 입력하면 D-day 기준 타임라인을 만들어준다. 체크리스트 파이프라인은 프로젝트 중 두 단계로 발전했다.
 
 - **2026-04-20 Golden Query 30건 평가 시점**: `LLM query planning → RAG/hybrid search → LLM checklist structuring → deterministic Python post-processing`. RAG+LLM으로 초안을 만들고 정형 조건과 필수 항목은 Python 규칙으로 보정했다.
-- **2026-04-21 later static optimization**: `free_text`가 없으면 LLM/search를 건너뛰는 static/rule path를 사용하고, `free_text`가 있을 때만 LLM path를 유지했다.
+- **2026-04-21 later static optimisation**: `free_text`가 없으면 LLM/search를 건너뛰는 static/rule path를 사용하고, `free_text`가 있을 때만 LLM path를 유지했다.
 - 각 항목은 법적 기한 기준 D-day로 정렬하고, 공휴일이면 다음 평일로 자동 조정했다.
 - 항목별 상세: 설명·신청 방법·연락처·법적 근거(외부 링크)·내 메모(로컬 저장)
 
@@ -127,7 +127,7 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 체크리스트 평가는 **서로 다른 두 stage**를 구분해 본다.
 
 - **2026-04-20 · Golden Query 30건**: `mean_recall 0.969`, **26/30 scenarios perfect recall**, **predefined must-not violations 0건**. 당시 구조는 `LLM query planning → RAG/hybrid search → LLM checklist structuring → deterministic Python post-processing`였다. citation coverage와 deadline accuracy는 별도 지표이며 완벽하지 않았다.
-- **2026-04-21 · later static optimization, 60건**: `free_text`가 없으면 LLM/search를 건너뛰는 static/rule path를 사용하고, `free_text`가 있을 때만 LLM path를 유지했다. 이 stage의 결과는 **recall 0.963, predefined must-not violations 0건**이다.
+- **2026-04-21 · later static optimisation, 60건**: `free_text`가 없으면 LLM/search를 건너뛰는 static/rule path를 사용하고, `free_text`가 있을 때만 LLM path를 유지했다. 이 stage의 결과는 **recall 0.963, predefined must-not violations 0건**이다.
 - `0.434 → 0.969 (v1 → v4)`는 retrieval·prompt·context·post-processing 등이 함께 바뀐 **전체 시스템 개선**이다. 특정 규칙이나 인덱스 변경 하나의 효과로 귀속하지 않는다. 현재 upstream 기록에는 v2/v3의 정확한 recall 값이 남아 있지 않다.
 - **predefined must-not violations 0건은 모든 종류의 hallucination이 0이었다는 뜻이 아니다.** 그래서 문서에서는 `hallucination 0` 대신 해당 평가 지표명을 그대로 쓴다.
 - **정량 평가는 있었지만 아키텍처 ablation은 아니었다.** unified index와 3-index를 같은 조건에서 A/B 비교하지는 않았다.
@@ -147,7 +147,7 @@ PDF를 올리면 위험 요소를 분석해 위험·주의·안전 등급으로 
 docker compose up
 
 # 모바일 앱
-cd frontend && npm install && npx expo start
+cd frontend/movewise-app && npm install && npx expo start
 ```
 
 최종 AI Search 인덱스와 학습된 Custom Neural 모델은 repo에 포함되지 않는다. 따라서 feature branch 코드만 checkout해도 최종 Azure 환경이 자동으로 복원되지는 않는다.

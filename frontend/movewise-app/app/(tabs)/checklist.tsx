@@ -170,7 +170,7 @@ export default function ChecklistScreen() {
           // loadCustomItems 내부에서 빈 start_date 마이그레이션 처리됨
           setCustomItems(customs);
         } else {
-          // 마이 탭에서 초기화된 직후 → 로컬 state 도 리셋하고 form 모드로
+          // 마이 탭에서 초기화된 직후 → 로컬 state도 리셋하고 form 모드로
           setResult(null);
           setCompletions({});
           setCustomItems([]);
@@ -238,7 +238,7 @@ export default function ChecklistScreen() {
             freshComp[itemKey(match)] = true;
           }
         }
-        // storage 를 새 key 셋으로 완전 교체 (구 key 잔류 방지)
+        // storage를 새 key 셋으로 완전 교체 (구 key 잔류 방지)
         await clearCompletions();
         for (const [k, v] of Object.entries(freshComp)) {
           await setCompletion(k, v);
@@ -306,8 +306,8 @@ export default function ChecklistScreen() {
   }
 
   function handleEditConditions() {
-    // 폼 상태는 useFocusEffect 에서 이미 복원된 상태 → 그대로 form 모드 전환
-    // submit 시 saveChecklist 가 덮어쓰고 완료 상태는 유지
+    // 폼 상태는 useFocusEffect에서 이미 복원된 상태 → 그대로 form 모드 전환
+    // submit 시 saveChecklist가 덮어쓰고 완료 상태는 유지
     setMode('form');
   }
 
@@ -317,7 +317,7 @@ export default function ChecklistScreen() {
     description: string;
     days_from_today: number;
   }) {
-    // 사용자가 "며칠 뒤" 로 입력 → 오늘 + N 의 실제 날짜로 저장
+    // 사용자가 "며칠 뒤"로 입력 → 오늘 + N의 실제 날짜로 저장
     const start = todayPlus(draft.days_from_today);
     const newItem: ChecklistItem = {
       category: draft.category || '내가 추가',

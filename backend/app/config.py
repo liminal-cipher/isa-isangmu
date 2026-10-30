@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     # ===== Azure AI Search =====
     azure_search_endpoint: str = Field(default="", alias="AZURE_SEARCH_ENDPOINT")
     azure_search_api_key: str = Field(default="", alias="AZURE_SEARCH_API_KEY", repr=False)
-    # NOTE: 통합 인덱스 전환 (Option B, 2026-04-15) 이후 두 client 가 동일 인덱스를 가리킴.
+    # NOTE: 통합 인덱스 전환 (Option B, 2026-04-15) 이후 두 client가 동일 인덱스를 가리킴.
     # 레거시 이름(moving-law-index / moving-procedure-index)은 제거됨.
     azure_search_law_index: str = Field(default="moving-unified-index", alias="AZURE_SEARCH_LAW_INDEX")
     azure_search_procedure_index: str = Field(default="moving-unified-index", alias="AZURE_SEARCH_PROCEDURE_INDEX")

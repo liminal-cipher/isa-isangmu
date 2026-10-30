@@ -62,7 +62,7 @@ export default function MyScreen() {
         {/* 글자 크기 설정 (접근성) */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>글자 크기</Text>
-          <Text style={styles.label}>아이·노약자 분은 글자를 크게 설정하세요</Text>
+          <Text style={styles.label}>아이·노약자분은 글자를 크게 설정하세요</Text>
           <View style={styles.scaleRow}>
             {(['normal', 'large', 'xlarge'] as FontScaleLevel[]).map((lv) => (
               <Pressable
@@ -155,7 +155,7 @@ export default function MyScreen() {
             <Text style={styles.sectionTitle}>법적 면책 고지</Text>
           </View>
           <Text style={styles.policyBody}>
-            본 서비스는 <Text style={{ fontWeight: '800' }}>이사 절차에 대한 참고용 사전 검토 도구</Text>이며, 변호사·법무사 등 전문가의 법률 자문이 아닙니다. AI 모델 특성상 검색 결과에 포함되지 않은 정보는 답변에 제공되지 않으며, 법 개정·최신 판례 미반영 등으로 오차가 있을 수 있습니다. 실제 계약·분쟁·행정 처리는 반드시 해당 기관(주민센터·법률구조공단 132·변호사) 에 확인하시기 바랍니다.
+            본 서비스는 <Text style={{ fontWeight: '800' }}>이사 절차에 대한 참고용 사전 검토 도구</Text>이며, 변호사·법무사 등 전문가의 법률 자문이 아닙니다. AI 모델 특성상 검색 결과에 포함되지 않은 정보는 답변에 제공되지 않으며, 법 개정·최신 판례 미반영 등으로 오차가 있을 수 있습니다. 실제 계약·분쟁·행정 처리는 반드시 해당 기관(주민센터·법률구조공단 132·변호사)에 확인하시기 바랍니다.
           </Text>
         </View>
 

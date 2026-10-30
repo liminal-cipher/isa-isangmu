@@ -1,8 +1,8 @@
 """단일 통합 인덱스 스키마 (Option B).
 
-A (법률) / B (행정절차) / C (유튜브) 를 하나의 Azure AI Search 인덱스로
+A (법률) / B (행정절차) / C (유튜브)를 하나의 Azure AI Search 인덱스로
 업로드하기 위한 Pydantic 모델. `source_type` 디스크리미네이터로 타입을 구분하고,
-타입별 특화 필드는 nullable 로 유지.
+타입별 특화 필드는 nullable로 유지.
 
 Usage:
     from backend.schemas.unified_index import UnifiedChunk, SourceType
@@ -29,9 +29,9 @@ SourceType = Literal["law", "procedure", "video"]
 
 
 def make_safe_id(prefix: str, source_id: str) -> str:
-    """사람이 읽는 source_id → Azure Search 규칙(영숫자·_·-·=) 에 맞는 안전 ID.
+    """사람이 읽는 source_id → Azure Search 규칙(영숫자·_·-·=)에 맞는 안전 ID.
 
-    Azure Search document key 제약상 한글 직접 사용 불가. 16-char sha1 prefix 로
+    Azure Search document key 제약상 한글 직접 사용 불가. 16-char sha1 prefix로
     결정적(deterministic) 변환 — 세션 간 재현 가능하고 충돌 확률 극히 낮음.
     """
     h = hashlib.sha1(source_id.encode("utf-8")).hexdigest()[:16]
@@ -41,7 +41,7 @@ def make_safe_id(prefix: str, source_id: str) -> str:
 class UnifiedChunk(BaseModel):
     """모든 인덱스 타입을 수용하는 단일 스키마.
 
-    Azure Search 는 `null` 필드를 sparse 하게 저장하므로, 타입별 특화 필드가
+    Azure Search는 `null` 필드를 sparse 하게 저장하므로, 타입별 특화 필드가
     많더라도 저장 비용·쿼리 성능에 거의 영향 없음.
     """
 
@@ -97,7 +97,7 @@ class UnifiedChunk(BaseModel):
     content_vector: Optional[list[float]] = None
 
 
-# Azure AI Search 인덱스 스키마 JSON 생성 함수 (upload_to_search.py 에서 사용)
+# Azure AI Search 인덱스 스키마 JSON 생성 함수 (upload_to_search.py에서 사용)
 def azure_index_schema(index_name: str = "moving-unified-index") -> dict:
     """Pydantic 모델 기반으로 Azure Search 인덱스 JSON 스키마 생성.
 
@@ -105,7 +105,7 @@ def azure_index_schema(index_name: str = "moving-unified-index") -> dict:
     """
     return {
         "name": index_name,
-        # NOTE: "description" 필드는 Azure Search API 2024-07-01 에서 제거됨 (지원 안 함)
+        # NOTE: "description" 필드는 Azure Search API 2024-07-01에서 제거됨 (지원 안 함)
         "fields": [
             {"name": "id", "type": "Edm.String", "key": True, "filterable": True, "retrievable": True},
             {"name": "source_id", "type": "Edm.String", "searchable": False, "filterable": True, "retrievable": True},

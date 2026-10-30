@@ -19,7 +19,7 @@ export const colors = {
   success: '#27AE60',
   successBg: '#E8F5E9',
 
-  // Grays — 가독성 향상 위해 더 진한 텍스트
+  // Greys — 가독성 향상 위해 더 진한 텍스트
   text: '#0F1822',
   textSub: '#5A6573',
   textMute: '#6B7280',

@@ -1,7 +1,7 @@
 """국토교통부 아파트 매매 실거래가 API 연동.
 
-공공데이터포털 'RTMSDataSvcAptTradeDev' 를 사용해 사용자 지역의
-최근 거래가를 조회한다. SafeContract 에서 깡통전세 비율 판정 시
+공공데이터포털 'RTMSDataSvcAptTradeDev'를 사용해 사용자 지역의
+최근 거래가를 조회한다. SafeContract에서 깡통전세 비율 판정 시
 시세를 자동 제안하는 용도.
 
 활용신청 필요:
@@ -178,7 +178,7 @@ def lookup_lawd_cd(region: str) -> Optional[str]:
     """지역명으로 법정동코드 5자리 조회 (부분 일치 허용)."""
     if region in LAWD_CD:
         return LAWD_CD[region]
-    # 부분 매칭: 구/군 키가 region 에 포함되는지
+    # 부분 매칭: 구/군 키가 region에 포함되는지
     for key, code in LAWD_CD.items():
         if key in region or region in key:
             return code
@@ -203,7 +203,7 @@ def fetch_recent_deals(
         raise RealtyApiNotAuthorized("DATA_GO_KR_SERVICE_KEY 미설정")
 
     # 2026-04 기준 신규 엔드포인트 (publicDataPk 15126469)
-    # 이전 getRTMSDataSvcAptTradeDev 는 deprecated
+    # 이전 getRTMSDataSvcAptTradeDev는 deprecated
     url = (
         "https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/"
         "getRTMSDataSvcAptTrade"

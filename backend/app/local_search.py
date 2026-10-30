@@ -63,9 +63,9 @@ def _scrub_record(rec: dict) -> dict:
 _INDEX_DIR = (
     Path(__file__).resolve().parent.parent / "data" / "indexes"
 )
-# 통합 인덱스 (Option B) — source_type 으로 구분
+# 통합 인덱스 (Option B) — source_type으로 구분
 UNIFIED_FILE = _INDEX_DIR / "index_unified.jsonl"
-# 레거시 2 인덱스 (unified 가 없을 때 fallback)
+# 레거시 2 인덱스 (unified가 없을 때 fallback)
 CHUNKS_FILE = _INDEX_DIR / "guide_chunks.jsonl"
 LAW_FILE = _INDEX_DIR / "law_chunks.jsonl"
 
@@ -97,13 +97,13 @@ def _filter_by_source_type(chunks: list[dict], source_type: str) -> list[dict]:
 def load_chunks() -> list[dict]:
     """행정절차(Index B) 청크 로드.
 
-    통합 인덱스(`index_unified.jsonl`) 가 있으면 거기서 source_type=procedure
-    필터해서 반환. 없으면 `guide_chunks.jsonl` 로 fallback.
+    통합 인덱스(`index_unified.jsonl`)가 있으면 거기서 source_type=procedure
+    필터해서 반환. 없으면 `guide_chunks.jsonl`로 fallback.
     """
     unified = load_unified()
     if unified:
-        # 통합 인덱스 레코드는 unified 스키마 필드를 쓰므로 기존 scorer 가 참조하는
-        # doc_title 필드를 title 로 매핑해 호환성 유지
+        # 통합 인덱스 레코드는 unified 스키마 필드를 쓰므로 기존 scorer가 참조하는
+        # doc_title 필드를 title로 매핑해 호환성 유지
         procs = _filter_by_source_type(unified, "procedure")
         return [{**c, "doc_title": c.get("title") or c.get("doc_title") or ""} for c in procs]
     if not CHUNKS_FILE.exists():
@@ -245,7 +245,7 @@ def score_law(chunk: dict, query_tokens: list[str]) -> float:
 
 
 def search_laws(queries: list[str], top_k_per_query: int = 2) -> list[dict]:
-    """법률 전문 검색. Index B 와 함께 쓰면 체크리스트 citations 후처리에 활용 가능."""
+    """법률 전문 검색. Index B와 함께 쓰면 체크리스트 citations 후처리에 활용 가능."""
     laws = load_laws()
     if not laws:
         return []
@@ -275,7 +275,7 @@ def load_youtube() -> list[dict]:
     """유튜브 자막(Index C) 로드. 통합 인덱스 우선, 레거시 fallback.
 
     통합 인덱스 레코드는 video_title 대신 title 필드를 쓰므로
-    호환성을 위해 video_title 도 함께 채워줌.
+    호환성을 위해 video_title도 함께 채워줌.
     """
     unified = load_unified()
     if unified:
@@ -319,7 +319,7 @@ def score_youtube(chunk: dict, query_tokens: list[str]) -> float:
 def search_youtube(queries: list[str], top_k_per_query: int = 2) -> list[dict]:
     """유튜브 자막 청크에서 키워드 검색.
 
-    반환 dict 에는 원본 메타데이터 (video_title, channel, deep_link, timecode)가 포함되어
+    반환 dict에는 원본 메타데이터 (video_title, channel, deep_link, timecode)가 포함되어
     챗봇에서 "이 질문은 <채널명>의 <영상제목> [MM:SS]를 참고하세요" 같은 인용 생성 가능.
     """
     vids = load_youtube()

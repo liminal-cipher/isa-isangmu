@@ -3,8 +3,8 @@
 흐름:
   1. 사용자 질문 → 도메인/인사 필터 → 키워드 추출
   2. Azure AI Search 통합 인덱스 (semantic + 벡터) 단일 호출
-     → source_type 별로 law / procedure / video 분리
-  3. Azure OpenAI 가 검색 컨텍스트로 자연어 답변 생성
+     → source_type별로 law / procedure / video 분리
+  3. Azure OpenAI가 검색 컨텍스트로 자연어 답변 생성
   4. Azure 미설정 시 로컬 키워드 검색 + 룰베이스 답변 fallback
 """
 from __future__ import annotations
@@ -66,7 +66,7 @@ CHAT_SYSTEM_PROMPT = """당신은 한국 이사·전월세 절차 전문 도우�
 """
 
 
-# 프리셋 질문 (UI 에서 선택할 수 있게)
+# 프리셋 질문 (UI에서 선택할 수 있게)
 PRESET_QUESTIONS = [
     "전입신고는 언제까지 해야 해요?",
     "확정일자는 어디서 받아요?",
@@ -197,7 +197,7 @@ def _clean_noise(text: str) -> str:
 
 
 def _proc_title(h: dict) -> str:
-    """unified index 와 로컬 chunk 양쪽에서 동작하는 제목 추출."""
+    """unified index와 로컬 chunk 양쪽에서 동작하는 제목 추출."""
     return clean_hanja(
         h.get("title")
         or h.get("doc_title")
@@ -315,10 +315,10 @@ def _sanitize_answer(
     proc_hits: list[dict],
     yt_hits: list[dict],
 ) -> str:
-    """LLM halluclination 방어 후처리 + 유튜브 블록 표준화.
+    """LLM hallucination 방어 후처리 + 유튜브 블록 표준화.
 
     - 검색 결과에 유튜브가 0건이면 '🎥 참고 영상:' 줄 제거 + 본문 [영상] 태그도 제거
-    - 유튜브 1건 이상이면 LLM 이 쓴 🎥 줄을 backend 가 만든 정확한 블록으로 교체
+    - 유튜브 1건 이상이면 LLM이 쓴 🎥 줄을 backend가 만든 정확한 블록으로 교체
       (제목·채널명 정확성 보장 + 실제 URL 포함 + 안내 문구)
     - 법률/절차 0건이면 각 태그도 제거
     """
@@ -331,8 +331,8 @@ def _sanitize_answer(
         out = yt_line_pat.sub("", out)
         out = out.replace("[영상]", "")
     else:
-        # backend 가 직접 만든 정확한 유튜브 블록.
-        # timestamp > 0 인 chunk 를 우선 선택 — 0초(인트로) 보다 의미 있는 부분 권장.
+        # backend가 직접 만든 정확한 유튜브 블록.
+        # timestamp > 0인 chunk를 우선 선택 — 0초(인트로)보다 의미 있는 부분 권장.
         top = next(
             (h for h in yt_hits if int(h.get("start_seconds") or 0) > 0),
             yt_hits[0],
@@ -355,9 +355,9 @@ def _sanitize_answer(
                 block_lines.append("더 궁금한 내용은 영상을 확인해보세요.")
         replacement = "\n".join(block_lines)
 
-        # LLM 이 쓴 🎥 줄이 있으면 교체, 없으면 "더 자세한 내용은" 앞에 삽입
+        # LLM이 쓴 🎥 줄이 있으면 교체, 없으면 "더 자세한 내용은" 앞에 삽입
         if yt_line_pat.search(out):
-            # callable 로 넘겨서 replacement 내 특수문자(&, ?) 가 backreference 로 오해되지 않게
+            # callable로 넘겨서 replacement 내 특수문자(&, ?)가 backreference로 오해되지 않게
             out = yt_line_pat.sub(lambda _m: replacement, out, count=1)
         elif "더 자세한 내용은" in out:
             out = out.replace(
@@ -373,14 +373,14 @@ def _sanitize_answer(
     if not proc_hits:
         out = out.replace("[절차]", "")
 
-    # 태그 제거로 생긴 이중공백·빈 줄 정리 (URL 의 공백은 건드리지 않음)
+    # 태그 제거로 생긴 이중공백·빈 줄 정리 (URL의 공백은 건드리지 않음)
     out = re.sub(r"[ \t]{2,}", " ", out)
     out = re.sub(r"\n{3,}", "\n\n", out)
     return out.strip()
 
 
 def _search_unified(query: str) -> tuple[list[dict], list[dict], list[dict]]:
-    """Azure AI Search 통합 인덱스 단일 호출 → source_type 별 split.
+    """Azure AI Search 통합 인덱스 단일 호출 → source_type별 split.
 
     Azure 미설정·SDK 미설치·호출 실패 시 ([], [], []) 반환 → 호출자가 로컬 폴백.
     """
@@ -515,7 +515,7 @@ def generate_chat_reply(
             used_queries=[query_joined],
         )
 
-    # Azure 모드 — LLM 에 컨텍스트 전달 (unified index field 사용)
+    # Azure 모드 — LLM에 컨텍스트 전달 (unified index field 사용)
     settings = get_settings()
     context_parts = []
     for h in law_hits[:5]:

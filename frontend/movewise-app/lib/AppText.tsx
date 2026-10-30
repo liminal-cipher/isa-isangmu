@@ -2,8 +2,8 @@
  * 스케일 자동 적용 Text — 프로젝트 전역에서 RN Text 대신 사용.
  *
  * MY 탭 글자 크기 토글(normal/large/xlarge)을 구독해서
- * 개별 Text 의 fontSize / lineHeight 에 SCALE_FACTORS 를 자동으로 곱함.
- * React 19 의 RN 0.81 Text 는 function component 라 render 몽키패치가
+ * 개별 Text의 fontSize / lineHeight에 SCALE_FACTORS를 자동으로 곱함.
+ * React 19의 RN 0.81 Text는 function component라 render 몽키패치가
  * 동작하지 않아서, wrapper 컴포넌트 접근으로 대체.
  */
 import React from 'react';

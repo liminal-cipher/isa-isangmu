@@ -1,6 +1,6 @@
 /**
- * 특이 상황 프리셋 — checklist_service.py 의 키워드 매칭과 동기화.
- * 각 옵션이 선택되면 label 을 special_concerns 배열에 추가해 백엔드에 전달한다.
+ * 특이 상황 프리셋 — checklist_service.py의 키워드 매칭과 동기화.
+ * 각 옵션이 선택되면 label을 special_concerns 배열에 추가해 백엔드에 전달한다.
  */
 
 export interface ConcernOption {

@@ -5,7 +5,7 @@
                          + content 상단 네비게이션·하단 푸터·중간 노이즈 제거
 3. Index C (video): channel_url / source_type 제거 (Azure unify 시 재설정됨)
 
-이후 unify_indexes.py 를 다시 돌려 index_unified.jsonl 재생성 → Azure 업로드.
+이후 unify_indexes.py를 다시 돌려 index_unified.jsonl 재생성 → Azure 업로드.
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def clean_procedure_content(text: str) -> str:
 
     lines = text.split("\n")
 
-    # 1) 상단 네비 블록 제거 — "현재위치 및 공유하기" 로 시작하는 청크 한정
+    # 1) 상단 네비 블록 제거 — "현재위치 및 공유하기"로 시작하는 청크 한정
     #    "관련법령" 줄 이후부터가 실제 본문.
     if lines and lines[0].strip() == "현재위치 및 공유하기":
         cut = None

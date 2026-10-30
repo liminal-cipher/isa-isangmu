@@ -67,7 +67,7 @@ export default function Home() {
   const progress =
     totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // 오늘 시작해야 하는 일 (start_date 가 오늘, 미완료)
+  // 오늘 시작해야 하는 일 (start_date가 오늘, 미완료)
   const todayTasks = saved
     ? saved.response.items
         .filter((it) => {
@@ -104,7 +104,7 @@ export default function Home() {
               size={18}
               color={colors.accent}
             />
-            <Text style={styles.welcome}>어서와요</Text>
+            <Text style={styles.welcome}>어서 와요</Text>
           </View>
           <Text style={styles.userName}>이사이상무</Text>
         </View>

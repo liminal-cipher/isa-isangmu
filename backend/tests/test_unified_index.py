@@ -6,7 +6,7 @@
   3. ID 중복 없음 (Azure Search key 규칙)
   4. ID 형식 안전성 (영숫자/언더스코어만)
   5. 필드 매핑 정확성 (샘플 확인)
-  6. 크로스 링크 무결성 (related_procedures/videos 가 실제 존재하는 ID)
+  6. 크로스 링크 무결성 (related_procedures/videos가 실제 존재하는 ID)
   7. 타입별 필수 필드 존재 (law → law_name/article, procedure → parent_doc, video → video_id)
 """
 from __future__ import annotations
@@ -56,7 +56,7 @@ def test_total_count_matches_sources(unified, source_counts):
 
 
 def test_source_type_distribution(unified, source_counts):
-    """source_type 별 개수가 원본과 일치."""
+    """source_type별 개수가 원본과 일치."""
     by_type = {"law": 0, "procedure": 0, "video": 0}
     for u in unified:
         by_type[u["source_type"]] += 1
@@ -89,7 +89,7 @@ def test_id_prefix_matches_source_type(unified):
 
 
 def test_make_safe_id_deterministic():
-    """같은 source_id 는 항상 같은 safe id 를 생성."""
+    """같은 source_id는 항상 같은 safe id를 생성."""
     a1 = make_safe_id("law", "주택임대차보호법__제3조")
     a2 = make_safe_id("law", "주택임대차보호법__제3조")
     assert a1 == a2
@@ -140,7 +140,7 @@ def test_video_chunks_have_required_fields(unified):
 
 
 def test_cross_links_reference_valid_ids(unified):
-    """related_procedures / related_videos 에 있는 ID 가 실제 존재하는지."""
+    """related_procedures / related_videos에 있는 ID가 실제 존재하는지."""
     all_ids = {u["id"] for u in unified}
     dangling = []
     for u in unified:
@@ -154,7 +154,7 @@ def test_cross_links_reference_valid_ids(unified):
 
 
 def test_at_least_some_cross_links_exist(unified):
-    """전체적으로 크로스 링크가 0 은 아닌지 (있어야 통합 가치가 있음)."""
+    """전체적으로 크로스 링크가 0은 아닌지 (있어야 통합 가치가 있음)."""
     total_proc = sum(len(u.get("related_procedures") or []) for u in unified)
     total_video = sum(len(u.get("related_videos") or []) for u in unified)
     assert total_proc > 0, "no related_procedures cross-links"
@@ -165,7 +165,7 @@ def test_at_least_some_cross_links_exist(unified):
 
 
 def test_all_chunks_have_user_profile_fields(unified):
-    """applicable_to / contract_type / region 은 전부 채워져 있어야 함."""
+    """applicable_to / contract_type / region은 전부 채워져 있어야 함."""
     for u in unified[:100]:
         assert u.get("applicable_to"), f"missing applicable_to: {u['source_id']}"
         assert u.get("contract_type"), f"missing contract_type: {u['source_id']}"

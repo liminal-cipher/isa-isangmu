@@ -26,7 +26,7 @@ import { Text } from '../../lib/AppText';
 import { buildMobileLawUrl, parseLawTitle } from '../../lib/lawUrl';
 import { colors, radius, spacing, typography } from '../../theme/colors';
 
-/** citation 을 모바일 친화 URL 로 변환. law 타입은 m.law.go.kr 사용. */
+/** citation을 모바일 친화 URL로 변환. law 타입은 m.law.go.kr 사용. */
 function resolveCitationUrl(c: ChatCitation): string | null {
   if (c.source_type === 'law') {
     const { law_name, article } = parseLawTitle(c.title);
@@ -45,7 +45,7 @@ const SOURCE_META: Record<SourceKind, { label: string; color: string; bg: string
 
 /** 본문의 [법률]/[절차]/[영상] 태그 → 컬러 배지, http(s) URL → 탭 가능한 링크. */
 function renderAnswerWithTags(text: string, textColor: string) {
-  // 태그 + URL 을 한 split 에서 함께 처리 (URL 은 마지막 구두점 제외)
+  // 태그 + URL을 한 split에서 함께 처리 (URL은 마지막 구두점 제외)
   const parts = text.split(/(\[법률\]|\[절차\]|\[영상\]|https?:\/\/[^\s)]+[^\s.,!?)\]])/g);
   return parts.map((p, i) => {
     let kind: SourceKind | null = null;
@@ -124,7 +124,7 @@ export default function ChatScreen() {
     const trimmed = text.trim();
     if (!trimmed || loading) return;
     setInput('');
-    // 멀티턴 — 이전 메시지를 history 로 전달 (initial bot message + 오류 메시지 제외, 최근 8개)
+    // 멀티턴 — 이전 메시지를 history로 전달 (initial bot message + 오류 메시지 제외, 최근 8개)
     const history = messages
       .filter((m) => m.text && !m.text.startsWith('오류:') && m !== INITIAL_BOT_MESSAGE)
       .slice(-8)
@@ -300,10 +300,10 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   );
 }
 
-/** source_type 별 그룹핑된 출처 목록. 아이콘/색/한글 라벨로 구분. */
+/** source_type별 그룹핑된 출처 목록. 아이콘/색/한글 라벨로 구분. */
 function CitationsGrouped({ citations }: { citations: ChatCitation[] }) {
   // backend source_type: 'law' | 'procedure' | 'youtube'
-  // UI: law / procedure / video (youtube 를 video 로 매핑)
+  // UI: law / procedure / video (youtube를 video로 매핑)
   const groups: Record<SourceKind, ChatCitation[]> = {
     law: [],
     procedure: [],

@@ -967,7 +967,7 @@
 
 ## 🔄 갱신 방법
 
-각 데이터는 `backend/scripts/ingest_*.py` 를 재실행해서 갱신:
+각 데이터는 `backend/scripts/ingest_*.py`를 재실행해서 갱신:
 
 ```bash
 # 법률 (LAW_OC 필요)

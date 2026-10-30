@@ -1,6 +1,6 @@
 # 이사이상무 Backend
 
-FastAPI 기반 백엔드. Azure OpenAI + AI Search + Document Intelligence 를 RAG 로 묶어 이사 체크리스트·등기부 해석·챗봇 제공.
+FastAPI 기반 백엔드. Azure OpenAI + AI Search + Document Intelligence를 RAG로 묶어 이사 체크리스트·등기부 해석·챗봇 제공.
 
 ---
 
@@ -123,7 +123,7 @@ pip install -r requirements.txt
 
 ### 2. 환경변수
 
-`.env.example` 을 `.env` 로 복사 후 필요한 키 채우기:
+`.env.example`을 `.env`로 복사 후 필요한 키 채우기:
 
 ```bash
 cp .env.example .env
@@ -196,7 +196,7 @@ pytest -k "test_compute_ratios_red"
 
 ## 데이터 갱신 / 인덱스 재빌드
 
-법령·절차·유튜브 스크립트 수집·청킹·인덱스 업로드 스크립트는 모두 `scripts/` 에.  
+법령·절차·유튜브 스크립트 수집·청킹·인덱스 업로드 스크립트는 모두 `scripts/`에.\
 실행 순서와 용도: [`scripts/README.md`](./scripts/README.md)
 
 ---
@@ -207,7 +207,7 @@ pytest -k "test_compute_ratios_red"
   - `main` 브랜치 푸시 시 자동 배포
   - 환경변수는 Render 대시보드에서 관리
 - Dockerfile: 로컬·CI 빌드용
-- 자세한 배포 가이드: 프로젝트 루트 `SETUP.md`
+- 자세한 배포 가이드: [`docs/SETUP.md`](../docs/SETUP.md)
 
 ---
 
@@ -215,11 +215,11 @@ pytest -k "test_compute_ratios_red"
 
 | 증상 | 원인 | 해결 |
 |------|------|------|
-| `/health` 에 `mode: "fallback"` | Azure 키 미설정 또는 잘못됨 | `.env` 확인, `/health` 의 `azure` 블록 어느 게 false 인지 체크 |
-| `/checklist` 가 하드코딩 항목만 반환 | LLM 호출 실패 → 폴백 | 로그에서 `structure LLM failed` 확인, OpenAI quota·키 체크 |
+| `/health`에 `mode: "fallback"` | Azure 키 미설정 또는 잘못됨 | `.env` 확인, `/health`의 `azure` 블록 어느 게 false인지 체크 |
+| `/checklist`가 하드코딩 항목만 반환 | LLM 호출 실패 → 폴백 | 로그에서 `structure LLM failed` 확인, OpenAI quota·키 체크 |
 | `/safecontract` 전세가율 0% | region 파싱 실패 → 시세 조회 안 됨 | 주소 포맷 확인 (시/도 + 시/군/구 필요), `DATA_GO_KR_SERVICE_KEY` 확인 |
 | `/safecontract/upload` 503 | Document Intelligence 미설정 | `AZURE_DOCINTEL_*` 환경변수 채움 |
-| 챗봇 답변이 일반적/검색 실패 | Azure AI Search 인덱스 문제 | `/health` 의 `indexes` 청크 수 확인 (0 이면 인덱스 비어있음) |
+| 챗봇 답변이 일반적/검색 실패 | Azure AI Search 인덱스 문제 | `/health`의 `indexes` 청크 수 확인 (0이면 인덱스 비어있음) |
 
 ---
 

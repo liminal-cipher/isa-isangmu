@@ -19,7 +19,7 @@ from .region_services import enrich_item_with_region
 
 
 def _enrich_citation(cite: dict) -> dict:
-    """Citation dict 에 Index A 조문 텍스트를 붙여 반환. 한자는 로드 시점에 이미 제거됨."""
+    """Citation dict에 Index A 조문 텍스트를 붙여 반환. 한자는 로드 시점에 이미 제거됨."""
     law_name = cite.get("law_name") or ""
     article = cite.get("article") or ""
     if not law_name or not article:
@@ -330,7 +330,7 @@ def structure_checklist_fallback(
         chunk = cat_to_chunk.get(cat)
         if chunk is None:
             return default_item
-        # citations 만 보강 (base에 없을 때)
+        # citations만 보강 (base에 없을 때)
         if chunk.get("related_laws") and not default_item.get("citations"):
             laws = []
             for cite in chunk["related_laws"][:2]:

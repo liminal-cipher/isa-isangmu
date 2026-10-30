@@ -9,7 +9,7 @@ Prereq:
 Usage:
   python3 backend/scripts/upload_to_search.py [--create-index] [--skip-embeddings]
 
-구 버전 (3 인덱스 분리 업로드) 은 option B 채택 후 단일 인덱스로 통합.
+구 버전 (3 인덱스 분리 업로드)은 option B 채택 후 단일 인덱스로 통합.
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ UNIFIED_DATA = ROOT / "backend" / "data" / "indexes" / "index_unified.jsonl"
 UNIFIED_INDEX_NAME = "moving-unified-index"
 EMBEDDING_CACHE = ROOT / "backend" / "data" / "indexes" / "index_unified_embeddings.jsonl"
 
-# Azure Search 가 거부하는 null 필드 제외 + datetime ISO 변환용
+# Azure Search가 거부하는 null 필드 제외 + datetime ISO 변환용
 _DATE_FIELDS = ("fetched_at",)
 
 
@@ -60,7 +60,7 @@ def _prepare_for_azure(d: dict) -> dict:
     for df in _DATE_FIELDS:
         if df in out:
             out[df] = _to_iso(out[df])
-    # 빈 문자열 fetched_at 은 제거 (Azure DateTimeOffset 이 빈 문자열 거부)
+    # 빈 문자열 fetched_at은 제거 (Azure DateTimeOffset이 빈 문자열 거부)
     if out.get("fetched_at") == "T00:00:00Z":
         out.pop("fetched_at", None)
     return out
@@ -70,10 +70,10 @@ _EMBED_CLIENT = None  # lazy-init singleton — connection pool 재사용
 
 
 def _get_embed_client():
-    """AzureOpenAI 클라이언트 싱글턴. 내부 httpx 에 connection limit 강제.
+    """AzureOpenAI 클라이언트 싱글턴. 내부 httpx에 connection limit 강제.
 
-    macOS 는 매 요청마다 새 connection 을 열면 로컬 포트가 금방 소진됨 (Errno 49).
-    단일 connection 을 유지하고 재사용하는 커스텀 httpx.Client 를 주입.
+    macOS는 매 요청마다 새 connection을 열면 로컬 포트가 금방 소진됨 (Errno 49).
+    단일 connection을 유지하고 재사용하는 커스텀 httpx.Client를 주입.
     """
     global _EMBED_CLIENT
     if _EMBED_CLIENT is not None:
@@ -143,11 +143,11 @@ def create_index() -> None:
 
 
 def upload_documents(docs: list[dict], batch: int = 20) -> None:
-    """업로드 — connection pooling 으로 로컬 포트 소진 방지.
+    """업로드 — connection pooling으로 로컬 포트 소진 방지.
 
-    매 요청마다 새 httpx.post() 를 쓰면 macOS 에서 수십 건만 지나도 로컬 포트가
-    TIME_WAIT 으로 소진되어 Errno 49 발생. httpx.Client context manager 로
-    한 connection 을 재사용하고, 배치 사이에 짧은 대기를 둬서 안정성 확보.
+    매 요청마다 새 httpx.post()를 쓰면 macOS에서 수십 건만 지나도 로컬 포트가
+    TIME_WAIT으로 소진되어 Errno 49 발생. httpx.Client context manager로
+    한 connection을 재사용하고, 배치 사이에 짧은 대기를 둬서 안정성 확보.
     """
     import time
     import httpx
@@ -250,9 +250,9 @@ def main() -> None:
             print(f"Embedding {len(missing_docs)} new contents...")
             missing_texts = [d["content"] for d in missing_docs]
             new_embeddings: list[list[float]] = []
-            # 배치 크기 64 로 늘림 — 총 connection 수 감소
+            # 배치 크기 64로 늘림 — 총 connection 수 감소
             BATCH = 64
-            # append-mode 로 캐시 파일 열어서 계산 즉시 디스크에 저장
+            # append-mode로 캐시 파일 열어서 계산 즉시 디스크에 저장
             EMBEDDING_CACHE.parent.mkdir(parents=True, exist_ok=True)
             with EMBEDDING_CACHE.open("a", encoding="utf-8") as cache_f:
                 for i in range(0, len(missing_texts), BATCH):
@@ -268,7 +268,7 @@ def main() -> None:
                     print(f"    embedded {i + len(batch_texts)}/{len(missing_texts)}  (cached)")
                     _time.sleep(0.05)
 
-        # 3) docs 에 벡터 주입
+        # 3) docs에 벡터 주입
         for doc in docs:
             doc["content_vector"] = cache_map[doc["id"]]
 

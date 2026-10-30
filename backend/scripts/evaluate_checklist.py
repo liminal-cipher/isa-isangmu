@@ -3,8 +3,8 @@
 Metrics:
   - recall@expected    : 생성된 item의 category가 expected_items를 얼마나 커버했는가
   - must_not_violations: must_not_include 카테고리가 생성된 횟수 (적을수록 좋음)
-  - citation_coverage  : citation_hint 가 실제 citation에 등장한 비율
-  - deadline_accuracy  : expected deadline_days 와 실제 일치한 비율
+  - citation_coverage  : citation_hint가 실제 citation에 등장한 비율
+  - deadline_accuracy  : expected deadline_days와 실제 일치한 비율
 
 Usage:
   python3 evaluate_checklist.py
